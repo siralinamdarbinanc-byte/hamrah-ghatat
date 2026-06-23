@@ -108,8 +108,8 @@ fun BrandSelectionScreen(
                 // Persian Title
                 Text(
                     text = "همراه قطعات",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.Black,
                     color = Color.White,
                     textAlign = TextAlign.Center
                 )

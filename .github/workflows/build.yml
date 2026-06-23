@@ -27,11 +27,26 @@ jobs:
         run: |
           curl -L -o gradle/wrapper/gradle-wrapper.jar https://github.com/gradle/gradle/raw/HEAD/gradle/wrapper/gradle-wrapper.jar
 
-      - name: Build with Gradle
-        run: ./gradlew assembleDebug
+      - name: Decode Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > ${{ github.workspace }}/hamrah.keystore
 
-      - name: Upload APK Artifact
+      - name: Build Release APK
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=${{ github.workspace }}/hamrah.keystore \
+            -Pandroid.injected.signing.store.password="$STORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-apk
-          path: app/build/outputs/apk/debug/*.apk
+          name: hamrah-ghatat
+          path: app/build/outputs/apk/release/*.apk

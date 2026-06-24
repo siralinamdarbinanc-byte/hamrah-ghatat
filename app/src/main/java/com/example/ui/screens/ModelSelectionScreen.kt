@@ -39,6 +39,7 @@ val iranKhodroModels = listOf(
     CarModel("peugeot_405", "پژو ۴۰۵", "۱۳۷۲ تا کنون"),
     CarModel("haima", "هایما S5", "۱۳۹۵ تا کنون"),
     CarModel("tara", "تارا", "۱۴۰۰ تا کنون"),
+    CarModel("tondar", "تندر ۹۰", "۱۳۸۵ تا کنون"),
 )
 
 val saipaModels = listOf(
@@ -179,7 +180,7 @@ fun ModelCard(
             .clickable { onClick() }
             .border(1.dp, Color(0xFF243447), RoundedCornerShape(14.dp)),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF142033))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E2D40))
     ) {
         Row(
             modifier = Modifier

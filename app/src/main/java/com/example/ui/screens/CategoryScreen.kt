@@ -52,6 +52,7 @@ data class PartCategory(
 @Composable
 fun CategoryScreen(
     brandId: String,
+    modelId: String,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {

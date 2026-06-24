@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "718065421007",
+    "project_id": "hamrah-ghatat",
+    "storage_bucket": "hamrah-ghatat.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718065421007:android:0dbcfc1b1f62dbdb41c5ba",
+        "android_client_info": {
+          "package_name": "Com.example"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRnM17sNt49HwuyP5SXDlwtYOw9jkQEH8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

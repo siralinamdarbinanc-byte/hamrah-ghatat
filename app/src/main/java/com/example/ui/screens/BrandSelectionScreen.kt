@@ -11,6 +11,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Verified
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.HeadsetMic
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -259,6 +263,17 @@ fun BrandSelectionScreen(
                         .testTag("brand_card_others")
                 )
 
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    FeatureItem(icon = Icons.Default.Verified, title = "ضمانت اصالت")
+                    FeatureItem(icon = Icons.Default.Star, title = "کیفیت تضمینی")
+                    FeatureItem(icon = Icons.Default.LocalShipping, title = "ارسال سریع")
+                    FeatureItem(icon = Icons.Default.HeadsetMic, title = "پشتیبانی 24/7")
+                }
                 Spacer(modifier = Modifier.height(48.dp))
             }
         }
@@ -631,6 +646,38 @@ fun BottomCarPartsDecoration(modifier: Modifier = Modifier) {
             start = Offset(cx5, cy5),
             end = Offset(cx5 + Math.cos(nAngleRad).toFloat() * (gR * 0.75f), cy5 + Math.sin(nAngleRad).toFloat() * (gR * 0.75f)),
             strokeWidth = strokeWidth * 2
+        )
+    }
+}
+
+@Composable
+fun FeatureItem(icon: androidx.compose.ui.graphics.vector.ImageVector, title: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(Color(0xFF142033))
+                .border(1.dp, Color(0xFF243447), RoundedCornerShape(12.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                tint = Color(0xFF3B82F6),
+                modifier = Modifier.size(24.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(
+            text = title,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color(0xFFA7B1C2),
+            textAlign = TextAlign.Center
         )
     }
 }

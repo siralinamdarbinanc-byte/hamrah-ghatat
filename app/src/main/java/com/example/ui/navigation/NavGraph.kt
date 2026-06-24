@@ -1,5 +1,8 @@
 package com.example.ui.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -8,9 +11,11 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -83,7 +88,12 @@ fun AppNavGraph(
                                     contentDescription = item.title
                                 )
                             },
-                            label = { Text(item.title, fontSize = androidx.compose.ui.unit.TextUnit.Unspecified) },
+                            label = {
+                                Text(
+                                    text = item.title,
+                                    fontSize = 11.sp
+                                )
+                            },
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = Color(0xFF3B82F6),
                                 selectedTextColor = Color(0xFF3B82F6),
@@ -157,18 +167,16 @@ fun AppNavGraph(
 
 @Composable
 fun PlaceholderScreen(title: String) {
-    androidx.compose.foundation.layout.Box(
+    Box(
         modifier = Modifier
-            .then(Modifier.fillMaxSize())
-            .then(
-                Modifier.background(Color(0xFF0B1220))
-            ),
-        contentAlignment = androidx.compose.ui.Alignment.Center
+            .fillMaxSize()
+            .background(Color(0xFF0B1220)),
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = title,
             color = Color.White,
-            fontSize = androidx.compose.ui.unit.sp(24f)
+            fontSize = 24.sp
         )
     }
 }

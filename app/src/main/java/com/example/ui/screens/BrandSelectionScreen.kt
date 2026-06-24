@@ -11,10 +11,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.HeadsetMic
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -269,10 +269,10 @@ fun BrandSelectionScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    FeatureItem(icon = Icons.Default.CheckCircle, title = "ضمانت اصالت")
+                    FeatureItem(icon = Icons.Default.Verified, title = "ضمانت اصالت")
                     FeatureItem(icon = Icons.Default.Star, title = "کیفیت تضمینی")
-                    FeatureItem(icon = Icons.Default.Send, title = "ارسال سریع")
-                    FeatureItem(icon = Icons.Default.Phone, title = "پشتیبانی 24/7")
+                    FeatureItem(icon = Icons.Default.LocalShipping, title = "ارسال سریع")
+                    FeatureItem(icon = Icons.Default.HeadsetMic, title = "پشتیبانی 24/7")
                 }
                 Spacer(modifier = Modifier.height(48.dp))
             }

@@ -40,6 +40,7 @@ val iranKhodroModels = listOf(
     CarModel("haima", "هایما S5", "۱۳۹۵ تا کنون"),
     CarModel("tara", "تارا", "۱۴۰۰ تا کنون"),
     CarModel("tondar", "تندر ۹۰", "۱۳۸۵ تا کنون"),
+    CarModel("xantia", "زانتیا", "۱۳۷۵ تا کنون"),
 )
 
 val saipaModels = listOf(

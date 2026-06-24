@@ -23,14 +23,18 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.ui.screens.BrandSelectionScreen
 import com.example.ui.screens.CategoryScreen
+import com.example.ui.screens.ModelSelectionScreen
 import com.example.ui.screens.SplashScreen
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
     object BrandSelection : Screen("brand_selection")
-    object IranKhodro : Screen("iran_khodro")
-    object Saipa : Screen("saipa")
-    object OtherCars : Screen("other_cars")
+    object ModelSelection : Screen("model_selection/{brandId}") {
+        fun createRoute(brandId: String) = "model_selection/$brandId"
+    }
+    object Category : Screen("category/{brandId}/{modelId}") {
+        fun createRoute(brandId: String, modelId: String) = "category/$brandId/$modelId"
+    }
     object Search : Screen("search")
     object Orders : Screen("orders")
     object Profile : Screen("profile")
@@ -124,31 +128,30 @@ fun AppNavGraph(
             composable(Screen.BrandSelection.route) {
                 BrandSelectionScreen(
                     onNavigateToIranKhodro = {
-                        navController.navigate(Screen.IranKhodro.route)
+                        navController.navigate(Screen.ModelSelection.createRoute("iran_khodro"))
                     },
                     onNavigateToSaipa = {
-                        navController.navigate(Screen.Saipa.route)
+                        navController.navigate(Screen.ModelSelection.createRoute("saipa"))
                     },
                     onNavigateToOtherCars = {
-                        navController.navigate(Screen.OtherCars.route)
+                        navController.navigate(Screen.ModelSelection.createRoute("other_cars"))
                     }
                 )
             }
-            composable(Screen.IranKhodro.route) {
-                CategoryScreen(
-                    brandId = "iran_khodro",
-                    onNavigateBack = { navController.popBackStack() }
+            composable(Screen.ModelSelection.route) { backStackEntry ->
+                val brandId = backStackEntry.arguments?.getString("brandId") ?: "iran_khodro"
+                ModelSelectionScreen(
+                    brandId = brandId,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToCategory = { bId, mId ->
+                        navController.navigate(Screen.Category.createRoute(bId, mId))
+                    }
                 )
             }
-            composable(Screen.Saipa.route) {
+            composable(Screen.Category.route) { backStackEntry ->
+                val brandId = backStackEntry.arguments?.getString("brandId") ?: "iran_khodro"
                 CategoryScreen(
-                    brandId = "saipa",
-                    onNavigateBack = { navController.popBackStack() }
-                )
-            }
-            composable(Screen.OtherCars.route) {
-                CategoryScreen(
-                    brandId = "other_cars",
+                    brandId = brandId,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

@@ -51,6 +51,7 @@ data class PartCategory(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen(
+    modelId: String = "",
     brandId: String,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier

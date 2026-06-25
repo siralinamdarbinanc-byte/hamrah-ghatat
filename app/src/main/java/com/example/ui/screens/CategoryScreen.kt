@@ -52,14 +52,12 @@ data class PartCategory(
 @Composable
 fun CategoryScreen(
     brandId: String,
-    modelId: String,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     
     // Luxury dark/ambient theme configuration tailored for each vehicle brand
-    val modelName = getModelName(modelId)
     val themeConfig = remember(brandId) {
         when (brandId) {
             "saipa" -> {
@@ -213,7 +211,7 @@ fun CategoryScreen(
                     title = {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = modelName,
+                                text = themeConfig.brandName,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp,
                                 color = Color.White
@@ -850,28 +848,6 @@ fun DynamicCategoryCard(
                 modifier = Modifier.size(24.dp)
             )
         }
-    }
-}
-
-fun getModelName(modelId: String): String {
-    return when (modelId) {
-        "peugeot_pars" -> "پژو پارس"
-        "samand" -> "سمند"
-        "dena" -> "دنا"
-        "rana" -> "رانا"
-        "peugeot_206" -> "پژو ۲۰۶"
-        "peugeot_405" -> "پژو ۴۰۵"
-        "haima" -> "هایما S5"
-        "tara" -> "تارا"
-        "tondar" -> "تندر ۹۰"
-        "xantia" -> "زانتیا"
-        "pride" -> "پراید"
-        "tiba" -> "تیبا"
-        "saina" -> "ساینا"
-        "shahin" -> "شاهین"
-        "quick" -> "کوییک"
-        "atlas" -> "اطلس"
-        else -> "قطعات خودرو"
     }
 }
 

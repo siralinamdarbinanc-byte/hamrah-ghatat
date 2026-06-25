@@ -875,28 +875,6 @@ fun getModelName(modelId: String): String {
     }
 }
 
-fun getModelName(modelId: String): String {
-    return when (modelId) {
-        "peugeot_pars" -> "پژو پارس"
-        "samand" -> "سمند"
-        "dena" -> "دنا"
-        "rana" -> "رانا"
-        "peugeot_206" -> "پژو ۲۰۶"
-        "peugeot_405" -> "پژو ۴۰۵"
-        "haima" -> "هایما S5"
-        "tara" -> "تارا"
-        "tondar" -> "تندر ۹۰"
-        "xantia" -> "زانتیا"
-        "pride" -> "پراید"
-        "tiba" -> "تیبا"
-        "saina" -> "ساینا"
-        "shahin" -> "شاهین"
-        "quick" -> "کوییک"
-        "atlas" -> "اطلس"
-        else -> "قطعات خودرو"
-    }
-}
-
 private data class BrandTheme(
     val brandName: String,
     val subtitleText: String,

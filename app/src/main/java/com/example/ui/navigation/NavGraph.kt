@@ -150,11 +150,8 @@ fun AppNavGraph(
             }
             composable(Screen.Category.route) { backStackEntry ->
                 val brandId = backStackEntry.arguments?.getString("brandId") ?: "iran_khodro"
-                val modelId = backStackEntry.arguments?.getString("modelId") ?: ""
-
                 CategoryScreen(
                     brandId = brandId,
-                    modelId = modelId,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

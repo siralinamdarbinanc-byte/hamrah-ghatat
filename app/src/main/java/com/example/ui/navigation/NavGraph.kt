@@ -1,7 +1,9 @@
 package com.example.ui.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -15,14 +17,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.data.repository.FirebaseRepository
+import com.example.ui.screens.AdminScreen
 import com.example.ui.screens.BrandSelectionScreen
 import com.example.ui.screens.CategoryScreen
+import com.example.ui.screens.LoginScreen
 import com.example.ui.screens.ModelSelectionScreen
 import com.example.ui.screens.SplashScreen
 
@@ -38,6 +44,8 @@ sealed class Screen(val route: String) {
     object Search : Screen("search")
     object Orders : Screen("orders")
     object Profile : Screen("profile")
+    object Login : Screen("login")
+    object Admin : Screen("admin")
 }
 
 data class BottomNavItem(
@@ -86,18 +94,8 @@ fun AppNavGraph(
                                     restoreState = true
                                 }
                             },
-                            icon = {
-                                Icon(
-                                    imageVector = item.icon,
-                                    contentDescription = item.title
-                                )
-                            },
-                            label = {
-                                Text(
-                                    text = item.title,
-                                    fontSize = 11.sp
-                                )
-                            },
+                            icon = { Icon(imageVector = item.icon, contentDescription = item.title) },
+                            label = { Text(text = item.title, fontSize = 11.sp) },
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = Color(0xFF3B82F6),
                                 selectedTextColor = Color(0xFF3B82F6),
@@ -150,8 +148,10 @@ fun AppNavGraph(
             }
             composable(Screen.Category.route) { backStackEntry ->
                 val brandId = backStackEntry.arguments?.getString("brandId") ?: "iran_khodro"
+                val modelId = backStackEntry.arguments?.getString("modelId") ?: ""
                 CategoryScreen(
                     brandId = brandId,
+                    modelId = modelId,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
@@ -162,7 +162,68 @@ fun AppNavGraph(
                 PlaceholderScreen(title = "سفارش‌ها")
             }
             composable(Screen.Profile.route) {
-                PlaceholderScreen(title = "پروفایل")
+                ProfileScreen(
+                    onNavigateToLogin = { navController.navigate(Screen.Login.route) },
+                    onNavigateToAdmin = { navController.navigate(Screen.Admin.route) }
+                )
+            }
+            composable(Screen.Login.route) {
+                LoginScreen(
+                    onLoginSuccess = {
+                        navController.navigate(Screen.Admin.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable(Screen.Admin.route) {
+                AdminScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileScreen(
+    onNavigateToLogin: () -> Unit,
+    onNavigateToAdmin: () -> Unit
+) {
+    val repository = remember { FirebaseRepository() }
+    var isLoggedIn by remember { mutableStateOf(repository.isLoggedIn()) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF0B1220)),
+        contentAlignment = Alignment.Center
+    ) {
+        if (isLoggedIn) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text("خوش آمدید، ادمین", color = Color.White, fontSize = 20.sp)
+                Button(
+                    onClick = onNavigateToAdmin,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))
+                ) {
+                    Text("پنل مدیریت", color = Color.White)
+                }
+                TextButton(onClick = {
+                    repository.signOut()
+                    isLoggedIn = false
+                }) {
+                    Text("خروج از حساب", color = Color.Red)
+                }
+            }
+        } else {
+            Button(
+                onClick = onNavigateToLogin,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))
+            ) {
+                Text("ورود مدیریت", color = Color.White)
             }
         }
     }
@@ -176,10 +237,6 @@ fun PlaceholderScreen(title: String) {
             .background(Color(0xFF0B1220)),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = title,
-            color = Color.White,
-            fontSize = 24.sp
-        )
+        Text(text = title, color = Color.White, fontSize = 24.sp)
     }
 }

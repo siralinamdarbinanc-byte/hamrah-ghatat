@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:718065421007:android:0dbcfc1b1f62dbdb41c5ba",
+        "mobilesdk_app_id": "1:718065421007:android:5d6243947b82ec3541c5ba",
         "android_client_info": {
-          "package_name": "Com.example"
+          "package_name": "com.aistudio.hamrahghatat.qprmxz"
         }
       },
       "oauth_client": [],

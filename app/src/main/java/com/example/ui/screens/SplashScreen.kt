@@ -6,11 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -19,36 +16,25 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.R
+import com.example.data.DataSeeder
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreen(
     onNavigateToSelection: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Enable Left-to-Right structure if needed, but Persian is RTL. 
-    // Splash screen can be centered and balanced.
     val scaleAnim = remember { Animatable(0.8f) }
     val alphaAnim = remember { Animatable(0f) }
-
-    LaunchedEffect(key1 = true) {
-        animate(
-            initialValue = 0.8f,
-            targetValue = 1.05f,
-            animationSpec = twinPercentSpringSpec()
-        ) { value, _ ->
-            // Mild scale bounce
-        }
-    }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = true) {
         scaleAnim.animateTo(
@@ -65,7 +51,14 @@ fun SplashScreen(
             targetValue = 1f,
             animationSpec = tween(1200)
         )
-        // Wait and then go to Brand Selection
+        // seed داده‌های پیش‌فرض به Firebase
+        scope.launch {
+            try {
+                DataSeeder.seedIfEmpty()
+            } catch (e: Exception) {
+                // اگه Firebase وصل نبود، ادامه می‌دیم
+            }
+        }
         delay(2200)
         onNavigateToSelection()
     }
@@ -76,15 +69,14 @@ fun SplashScreen(
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF000000), // Pure top black
-                        Color(0xFF020E22), // Rich navy blue core
-                        Color(0xFF010A16)  // Midnight low edge
+                        Color(0xFF000000),
+                        Color(0xFF020E22),
+                        Color(0xFF010A16)
                     )
                 )
             )
             .testTag("splash_screen_root")
     ) {
-        // Decorative glowing circle behind
         Box(
             modifier = Modifier
                 .size(320.dp)
@@ -104,14 +96,12 @@ fun SplashScreen(
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Main branding container
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .scale(scaleAnim.value)
                     .alpha(alphaAnim.value)
             ) {
-                // Outer glow border for image
                 Box(
                     modifier = Modifier
                         .size(174.dp)
@@ -152,14 +142,13 @@ fun SplashScreen(
                 )
             }
 
-            // Bottom loading progress & version details
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.padding(bottom = 16.dp)
             ) {
                 CircularProgressIndicator(
-                    color = Color(0xFFA855F7), // Soft modern purple light indicator
+                    color = Color(0xFFA855F7),
                     strokeWidth = 3.dp,
                     modifier = Modifier
                         .size(36.dp)

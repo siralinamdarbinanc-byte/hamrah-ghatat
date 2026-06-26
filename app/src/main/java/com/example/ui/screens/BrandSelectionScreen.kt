@@ -187,7 +187,7 @@ fun BrandCardLight(
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = Color(0xFF0A3D91)
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 2.dp

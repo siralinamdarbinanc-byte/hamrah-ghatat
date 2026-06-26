@@ -81,7 +81,7 @@ fun AppNavGraph(
         bottomBar = {
             if (showBottomBar) {
                 NavigationBar(
-                    containerColor = Color(0xFF0D1B2A),
+                    containerColor = Color(0xFF003087),
                     contentColor = Color.White
                 ) {
                     bottomNavItems.forEach { item ->
@@ -101,7 +101,7 @@ fun AppNavGraph(
                                 selectedTextColor = Color(0xFF3B82F6),
                                 unselectedIconColor = Color(0xFFA7B1C2),
                                 unselectedTextColor = Color(0xFFA7B1C2),
-                                indicatorColor = Color(0xFF142033)
+                                indicatorColor = Color(0xFF00236B)
                             )
                         )
                     }
@@ -196,7 +196,7 @@ fun ProfileScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0B1220)),
+            .background(Color(0xFF003087)),
         contentAlignment = Alignment.Center
     ) {
         if (isLoggedIn) {
@@ -234,7 +234,7 @@ fun PlaceholderScreen(title: String) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0B1220)),
+            .background(Color(0xFF003087)),
         contentAlignment = Alignment.Center
     ) {
         Text(text = title, color = Color.White, fontSize = 24.sp)

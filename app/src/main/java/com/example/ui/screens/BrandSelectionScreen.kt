@@ -41,7 +41,7 @@ fun BrandSelectionScreen(
 ) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         // رنگ پس‌زمینه اصلی: خاکستری روشن (مثل تصویر سمت راست)
-        val backgroundColor = Color(0xFFF5F6FA)
+        val backgroundColor = Color(0xFF003087)
 
         Box(
             modifier = modifier
@@ -62,7 +62,7 @@ fun BrandSelectionScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFF0D2C54))
+                        .background(Color(0xFF003087))
                         .padding(horizontal = 24.dp, vertical = 32.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -257,7 +257,7 @@ fun FeatureItemLight(icon: androidx.compose.ui.graphics.vector.ImageVector, titl
             Icon(
                 imageVector = icon,
                 contentDescription = title,
-                tint = Color(0xFF0D2C54),
+                tint = Color(0xFF003087),
                 modifier = Modifier.size(24.dp)
             )
         }

@@ -46,8 +46,6 @@ data class PartCategory(
     val description: String,
     val icon: ImageVector,
     val parts: List<String>
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen(
@@ -183,7 +181,8 @@ fun CategoryScreen(
                     "other_cars" -> listOf("کیت روغن و فیلتر گیربکس اتوماتیک AL4", "دیسک و صفحه کلاچ جک J5 دنده‌ای سیکو", "ساعت کامل گیربکس هیوندای آزرا ۳.۳", "پلوس کامل سمت چپ ام‌وی‌ام X22 دنده‌ای", "شیر برقی گیربکس اتوماتیک پژو ۲۰۶ و مگان")
                     else -> listOf("کیت کلاچ والئو سبزرنگ اصلی پری‌دمپر", "پوسته گیربکس پژو ۴۰۵ ایساکو", "دنده برنجی گیربکس BE4 دنا", "کشویی دنده ۱ و ۲ سمند", "بلبرینگ کلاچ اصلی موتور EF7")
                 }
-            )
+            )3
+
         )
     }
 
@@ -218,6 +217,8 @@ fun CategoryScreen(
                                 color = Color.White
                             )
                             Spacer(modifier = Modifier.height(2.dp))
+
+
                             Text(
                                 text = "دسته بندی قطعات یدکی",
                                 fontSize = 11.sp,

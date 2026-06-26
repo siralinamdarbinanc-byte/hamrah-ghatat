@@ -1,5 +1,6 @@
 package com.example.data
 
+import com.example.data.repository.FirebaseRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -7,20 +8,21 @@ object DataSeeder {
 
     private val db = FirebaseFirestore.getInstance()
 
-    data class PartData(val name: String, val price: Long, val stock: Int)
-    data class CategoryData(val name: String, val order: Int, val parts: List<PartData>)
-    data class ModelData(val name: String, val year: String, val order: Int, val categories: Map<String, CategoryData>)
-    data class BrandData(val name: String, val color: String, val order: Int, val models: Map<String, ModelData>)
+    // ساختار داده داخلی
+    private data class PartData(val name: String, val price: Long, val stock: Int)
+    private data class CategoryData(val id: String, val name: String, val order: Int, val parts: List<PartData>)
+    private data class ModelData(val id: String, val name: String, val year: String, val order: Int, val categories: List<CategoryData>)
+    private data class BrandData(val id: String, val name: String, val color: String, val order: Int, val models: List<ModelData>)
 
-    private val DATA: Map<String, BrandData> = mapOf(
-        "iran_khodro" to BrandData("ایران\u200Cخودرو", "#0D2C54", 1, mapOf(
-            "peugeot_405" to ModelData("پژو ۴۰۵", "۱۳۷۲ تا کنون", 1, mapOf(
-                "engine" to CategoryData("موتور", 1, listOf(
+    private val BRANDS = listOf(
+        BrandData("iran_khodro", "ایران‌خودرو", "#0D2C54", 1, listOf(
+            ModelData("peugeot_405", "پژو ۴۰۵", "۱۳۷۲ تا کنون", 1, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
                     PartData("واشر سرسیلندر پژو ۴۰۵ استاندارد ایساکو", 850000, 15),
                     PartData("رینگ موتور پژو ۴۰۵ STD عظام", 1200000, 8),
                     PartData("پیستون کامل پژو ۴۰۵ STD ایساکو", 2800000, 5),
                     PartData("تسمه تایم پژو ۴۰۵ پاورگریپ", 450000, 20),
-                    PartData("سفت\u200Cکن تسمه تایم پژو ۴۰۵", 380000, 12),
+                    PartData("سفت‌کن تسمه تایم پژو ۴۰۵", 380000, 12),
                     PartData("فیلتر روغن پژو ۴۰۵ ایساکو", 85000, 50),
                     PartData("اویل پمپ پژو ۴۰۵ ایساکو", 1100000, 6),
                     PartData("واتر پمپ پژو ۴۰۵ ایساکو", 750000, 10),
@@ -32,7 +34,6 @@ object DataSeeder {
                     PartData("سوپاپ دود پژو ۴۰۵ ایساکو", 180000, 30),
                     PartData("سوپاپ هوا پژو ۴۰۵ ایساکو", 160000, 30),
                     PartData("اسبک پژو ۴۰۵ ایساکو", 95000, 40),
-                    PartData("فنر سوپاپ پژو ۴۰۵", 45000, 50),
                     PartData("یاتاقان ثابت پژو ۴۰۵ STD", 650000, 10),
                     PartData("یاتاقان متحرک پژو ۴۰۵ STD", 580000, 10),
                     PartData("واشر منیفولد دود پژو ۴۰۵", 75000, 25),
@@ -40,9 +41,10 @@ object DataSeeder {
                     PartData("پمپ بنزین پژو ۴۰۵ داخل باک", 950000, 7),
                     PartData("فیلتر بنزین پژو ۴۰۵", 120000, 35),
                     PartData("انژکتور پژو ۴۰۵ زیمنس", 1800000, 5),
-                    PartData("دریچه گاز پژو ۴۰۵", 2200000, 4)
+                    PartData("دریچه گاز پژو ۴۰۵", 2200000, 4),
+                    PartData("فیلتر هوا پژو ۴۰۵", 155000, 28)
                 )),
-                "suspension" to CategoryData("جلوبندی و تعلیق", 2, listOf(
+                CategoryData("suspension", "جلوبندی و تعلیق", 2, listOf(
                     PartData("کمک فنر جلو پژو ۴۰۵ عظام", 1800000, 8),
                     PartData("کمک فنر عقب پژو ۴۰۵ عظام", 1500000, 8),
                     PartData("فنر جلو پژو ۴۰۵", 850000, 10),
@@ -68,7 +70,7 @@ object DataSeeder {
                     PartData("تسمه فرمان پژو ۴۰۵", 320000, 15),
                     PartData("میل فرمان کامل پژو ۴۰۵", 2800000, 4)
                 )),
-                "electrical" to CategoryData("برق و ECU", 3, listOf(
+                CategoryData("electrical", "برق و ECU", 3, listOf(
                     PartData("ایسیو زیمنس پژو ۴۰۵ کروز", 8500000, 2),
                     PartData("کویل دوبل پژو ۴۰۵ TU5", 1200000, 6),
                     PartData("شمع پژو ۴۰۵ اکیوم NGK", 185000, 40),
@@ -77,25 +79,22 @@ object DataSeeder {
                     PartData("سنسور اکسیژن پژو ۴۰۵ زیمنس", 1800000, 5),
                     PartData("سنسور دما آب پژو ۴۰۵", 280000, 15),
                     PartData("سنسور میل لنگ پژو ۴۰۵", 650000, 8),
-                    PartData("سنسور دریچه گاز پژو ۴۰۵", 480000, 10),
                     PartData("رله بوش پژو ۴۰۵", 185000, 20),
-                    PartData("باتری پژو ۴۰۵ ۵۵ آمپر صبا", 3500000, 5),
-                    PartData("سیم\u200Cکشی موتور پژو ۴۰۵ ایساکو", 2800000, 3),
                     PartData("چراغ جلو پژو ۴۰۵ راست", 1800000, 4),
                     PartData("چراغ جلو پژو ۴۰۵ چپ", 1800000, 4),
                     PartData("چراغ عقب پژو ۴۰۵ راست", 1200000, 5),
-                    PartData("چراغ عقب پژو ۴۰۵ چپ", 1200000, 5)
+                    PartData("چراغ عقب پژو ۴۰۵ چپ", 1200000, 5),
+                    PartData("باتری پژو ۴۰۵ ۵۵ آمپر صبا", 3500000, 5)
                 )),
-                "gearbox" to CategoryData("گیربکس", 4, listOf(
+                CategoryData("gearbox", "گیربکس", 4, listOf(
                     PartData("دیسک کلاچ پژو ۴۰۵ والئو", 1800000, 6),
                     PartData("صفحه کلاچ پژو ۴۰۵ والئو", 2200000, 6),
                     PartData("بلبرینگ کلاچ پژو ۴۰۵", 480000, 12),
                     PartData("سیم کلاچ پژو ۴۰۵ ایساکو", 180000, 20),
-                    PartData("روغن گیربکس پژو ۴۰۵ ایساکو ۱ لیتر", 280000, 30),
-                    PartData("سیل گیربکس پژو ۴۰۵", 85000, 25),
+                    PartData("روغن گیربکس پژو ۴۰۵ ۱ لیتر", 280000, 30),
                     PartData("دنده برنجی گیربکس پژو ۴۰۵", 650000, 8)
                 )),
-                "body" to CategoryData("بدنه", 5, listOf(
+                CategoryData("body", "بدنه", 5, listOf(
                     PartData("سپر جلو پژو ۴۰۵ مهرکام", 2800000, 4),
                     PartData("سپر عقب پژو ۴۰۵ مهرکام", 2200000, 4),
                     PartData("گلگیر جلو راست پژو ۴۰۵", 3500000, 3),
@@ -104,12 +103,11 @@ object DataSeeder {
                     PartData("آینه بغل چپ پژو ۴۰۵", 1200000, 5),
                     PartData("شیشه جلو پژو ۴۰۵", 4500000, 2),
                     PartData("دستگیره درب پژو ۴۰۵ بیرونی", 380000, 10),
-                    PartData("دستگیره درب پژو ۴۰۵ داخلی", 280000, 12),
                     PartData("لولای کاپوت پژو ۴۰۵", 480000, 8)
                 ))
             )),
-            "peugeot_pars" to ModelData("پژو پارس", "۱۳۸۰ تا کنون", 2, mapOf(
-                "engine" to CategoryData("موتور", 1, listOf(
+            ModelData("peugeot_pars", "پژو پارس", "۱۳۸۰ تا کنون", 2, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
                     PartData("واشر سرسیلندر پارس XU7 ایساکو", 950000, 12),
                     PartData("رینگ موتور پارس XU7 STD عظام", 1350000, 8),
                     PartData("پیستون کامل پارس XU7 STD", 3100000, 5),
@@ -130,7 +128,7 @@ object DataSeeder {
                     PartData("واشر منیفولد دود پارس", 85000, 20),
                     PartData("درپوش سرسیلندر پارس ایساکو", 350000, 7)
                 )),
-                "suspension" to CategoryData("جلوبندی و تعلیق", 2, listOf(
+                CategoryData("suspension", "جلوبندی و تعلیق", 2, listOf(
                     PartData("کمک فنر جلو پارس عظام", 2000000, 6),
                     PartData("کمک فنر عقب پارس عظام", 1650000, 6),
                     PartData("سیبک فرمان پارس امیرنیا", 420000, 12),
@@ -147,25 +145,24 @@ object DataSeeder {
                     PartData("گردگیر پلوس پارس خارجی", 185000, 18),
                     PartData("گردگیر پلوس پارس داخلی", 205000, 18)
                 )),
-                "electrical" to CategoryData("برق و ECU", 3, listOf(
+                CategoryData("electrical", "برق و ECU", 3, listOf(
                     PartData("ایسیو زیمنس پارس کروز", 9000000, 2),
                     PartData("کویل دوبل پارس XU7", 1350000, 5),
                     PartData("شمع پارس NGK اکیوم", 195000, 35),
                     PartData("دینام پارس ۷۰ آمپر ایساکو", 4200000, 3),
-                    PartData("استارت پارس ایساکو", 3100000, 3),
                     PartData("سنسور اکسیژن پارس زیمنس", 2000000, 4),
                     PartData("سنسور دما آب پارس", 310000, 12),
                     PartData("چراغ جلو پارس راست", 2100000, 3),
                     PartData("چراغ جلو پارس چپ", 2100000, 3)
                 )),
-                "gearbox" to CategoryData("گیربکس", 4, listOf(
+                CategoryData("gearbox", "گیربکس", 4, listOf(
                     PartData("دیسک کلاچ پارس والئو", 2000000, 5),
                     PartData("صفحه کلاچ پارس والئو", 2400000, 5),
                     PartData("بلبرینگ کلاچ پارس", 520000, 10),
                     PartData("سیم کلاچ پارس ایساکو", 210000, 18),
                     PartData("دنده برنجی گیربکس پارس", 720000, 6)
                 )),
-                "body" to CategoryData("بدنه", 5, listOf(
+                CategoryData("body", "بدنه", 5, listOf(
                     PartData("سپر جلو پارس مهرکام", 3200000, 3),
                     PartData("سپر عقب پارس مهرکام", 2600000, 3),
                     PartData("گلگیر جلو راست پارس", 3800000, 3),
@@ -174,8 +171,8 @@ object DataSeeder {
                     PartData("آینه بغل چپ پارس", 1350000, 4)
                 ))
             )),
-            "samand" to ModelData("سمند", "۱۳۸۱ تا کنون", 3, mapOf(
-                "engine" to CategoryData("موتور", 1, listOf(
+            ModelData("samand", "سمند", "۱۳۸۱ تا کنون", 3, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
                     PartData("واشر سرسیلندر سمند EF7 ایساکو", 1100000, 10),
                     PartData("رینگ موتور سمند EF7 STD", 1500000, 6),
                     PartData("پیستون کامل سمند EF7 STD ایساکو", 3500000, 4),
@@ -187,11 +184,9 @@ object DataSeeder {
                     PartData("انژکتور سمند زیمنس", 2200000, 4),
                     PartData("دریچه گاز سمند EF7", 2800000, 3),
                     PartData("یاتاقان ثابت سمند EF7 STD", 800000, 7),
-                    PartData("یاتاقان متحرک سمند EF7 STD", 720000, 7),
-                    PartData("واشر منیفولد دود سمند", 90000, 18),
                     PartData("فیلتر هوا سمند EF7", 185000, 25)
                 )),
-                "suspension" to CategoryData("جلوبندی و تعلیق", 2, listOf(
+                CategoryData("suspension", "جلوبندی و تعلیق", 2, listOf(
                     PartData("کمک فنر جلو سمند عظام", 2200000, 6),
                     PartData("کمک فنر عقب سمند عظام", 1800000, 6),
                     PartData("سیبک فرمان سمند امیرنیا", 460000, 10),
@@ -204,7 +199,7 @@ object DataSeeder {
                     PartData("بلبرینگ چرخ جلو سمند", 680000, 8),
                     PartData("شیر فرمان سمند ایساکو", 5200000, 2)
                 )),
-                "electrical" to CategoryData("برق و ECU", 3, listOf(
+                CategoryData("electrical", "برق و ECU", 3, listOf(
                     PartData("ایسیو سمند EF7 مگنتی مارلی", 9500000, 2),
                     PartData("شمع سمند EF7 NGK", 210000, 30),
                     PartData("دینام سمند ۹۰ آمپر ایساکو", 4800000, 2),
@@ -212,21 +207,21 @@ object DataSeeder {
                     PartData("چراغ جلو سمند راست", 2400000, 3),
                     PartData("چراغ جلو سمند چپ", 2400000, 3)
                 )),
-                "gearbox" to CategoryData("گیربکس", 4, listOf(
+                CategoryData("gearbox", "گیربکس", 4, listOf(
                     PartData("دیسک کلاچ سمند والئو", 2200000, 4),
                     PartData("صفحه کلاچ سمند والئو", 2600000, 4),
                     PartData("بلبرینگ کلاچ سمند", 580000, 8),
                     PartData("کشویی دنده ۱ و ۲ سمند", 850000, 6)
                 )),
-                "body" to CategoryData("بدنه", 5, listOf(
+                CategoryData("body", "بدنه", 5, listOf(
                     PartData("سپر جلو سمند مهرکام", 3500000, 3),
                     PartData("سپر عقب سمند مهرکام", 2800000, 3),
                     PartData("گلگیر جلو راست سمند", 4200000, 2),
                     PartData("گلگیر جلو چپ سمند", 4200000, 2)
                 ))
             )),
-            "dena" to ModelData("دنا", "۱۳۹۲ تا کنون", 4, mapOf(
-                "engine" to CategoryData("موتور", 1, listOf(
+            ModelData("dena", "دنا", "۱۳۹۲ تا کنون", 4, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
                     PartData("واشر سرسیلندر دنا EF7 ایساکو", 1200000, 8),
                     PartData("تسمه تایم دنا پاورگریپ", 620000, 12),
                     PartData("فیلتر روغن دنا ایساکو", 110000, 40),
@@ -237,7 +232,7 @@ object DataSeeder {
                     PartData("فیلتر هوا دنا EF7", 210000, 20),
                     PartData("یاتاقان ثابت دنا EF7 STD", 850000, 6)
                 )),
-                "suspension" to CategoryData("جلوبندی و تعلیق", 2, listOf(
+                CategoryData("suspension", "جلوبندی و تعلیق", 2, listOf(
                     PartData("کمک فنر جلو دنا عظام", 2500000, 4),
                     PartData("کمک فنر عقب دنا عظام", 2000000, 4),
                     PartData("لنت ترمز جلو دنا تیتان", 850000, 12),
@@ -246,30 +241,28 @@ object DataSeeder {
                     PartData("پلوس کامل راست دنا ایساکو", 4200000, 3),
                     PartData("بلبرینگ چرخ جلو دنا", 720000, 6)
                 )),
-                "electrical" to CategoryData("برق و ECU", 3, listOf(
+                CategoryData("electrical", "برق و ECU", 3, listOf(
                     PartData("ایسیو دنا پلاس کروز کنترل", 11000000, 1),
                     PartData("چراغ جلو دنا پلاس LED راست", 4500000, 2),
                     PartData("چراغ جلو دنا پلاس LED چپ", 4500000, 2),
                     PartData("شمع دنا EF7 NGK", 220000, 25),
                     PartData("سنسور اکسیژن دنا زیمنس", 2400000, 3)
                 )),
-                "gearbox" to CategoryData("گیربکس", 4, listOf(
+                CategoryData("gearbox", "گیربکس", 4, listOf(
                     PartData("دیسک کلاچ دنا والئو", 2400000, 4),
                     PartData("صفحه کلاچ دنا والئو", 2800000, 4),
                     PartData("بلبرینگ کلاچ دنا", 620000, 7)
                 )),
-                "body" to CategoryData("بدنه", 5, listOf(
+                CategoryData("body", "بدنه", 5, listOf(
                     PartData("سپر جلو دنا مهرکام", 4200000, 2),
                     PartData("سپر عقب دنا مهرکام", 3500000, 2),
                     PartData("آینه بغل راست دنا برقی", 2800000, 3),
                     PartData("آینه بغل چپ دنا برقی", 2800000, 3)
                 ))
             )),
-            "peugeot_206" to ModelData("پژو ۲۰۶", "۱۳۸۰ تا کنون", 5, mapOf(
-                "engine" to CategoryData("موتور", 1, listOf(
-                    PartData("واشر سرسیلندر ۲۰۶ TU3 ایساکو", 780000, 12),
+            ModelData("peugeot_206", "پژو ۲۰۶", "۱۳۸۰ تا کنون", 5, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
                     PartData("واشر سرسیلندر ۲۰۶ TU5 ایساکو", 850000, 10),
-                    PartData("تسمه تایم ۲۰۶ TU3 پاورگریپ", 420000, 20),
                     PartData("تسمه تایم ۲۰۶ TU5 پاورگریپ", 480000, 18),
                     PartData("فیلتر روغن ۲۰۶ ایساکو", 85000, 55),
                     PartData("واتر پمپ ۲۰۶ TU5 ایساکو", 780000, 8),
@@ -281,7 +274,7 @@ object DataSeeder {
                     PartData("یاتاقان ثابت ۲۰۶ TU5 STD", 680000, 8),
                     PartData("فیلتر هوا ۲۰۶", 165000, 30)
                 )),
-                "suspension" to CategoryData("جلوبندی و تعلیق", 2, listOf(
+                CategoryData("suspension", "جلوبندی و تعلیق", 2, listOf(
                     PartData("کمک فنر جلو ۲۰۶ عظام", 1850000, 7),
                     PartData("کمک فنر عقب ۲۰۶ عظام", 1550000, 7),
                     PartData("سیبک فرمان ۲۰۶ امیرنیا", 390000, 14),
@@ -293,10 +286,9 @@ object DataSeeder {
                     PartData("پلوس کامل راست ۲۰۶ ایساکو", 3300000, 3),
                     PartData("پلوس کامل چپ ۲۰۶ ایساکو", 3300000, 3),
                     PartData("بلبرینگ چرخ جلو ۲۰۶", 590000, 10),
-                    PartData("بوش طبق ۲۰۶ بزرگ", 98000, 28),
                     PartData("گردگیر پلوس ۲۰۶ خارجی", 175000, 20)
                 )),
-                "electrical" to CategoryData("برق و ECU", 3, listOf(
+                CategoryData("electrical", "برق و ECU", 3, listOf(
                     PartData("ایسیو ۲۰۶ TU5 زیمنس", 8800000, 2),
                     PartData("کویل دوبل ۲۰۶ TU5", 1250000, 5),
                     PartData("شمع ۲۰۶ TU5 NGK", 190000, 35),
@@ -305,13 +297,13 @@ object DataSeeder {
                     PartData("چراغ جلو ۲۰۶ راست", 1900000, 4),
                     PartData("چراغ جلو ۲۰۶ چپ", 1900000, 4)
                 )),
-                "gearbox" to CategoryData("گیربکس", 4, listOf(
+                CategoryData("gearbox", "گیربکس", 4, listOf(
                     PartData("دیسک کلاچ ۲۰۶ والئو", 1900000, 5),
                     PartData("صفحه کلاچ ۲۰۶ والئو", 2300000, 5),
                     PartData("بلبرینگ کلاچ ۲۰۶", 490000, 10),
                     PartData("سیم کلاچ ۲۰۶ ایساکو", 190000, 18)
                 )),
-                "body" to CategoryData("بدنه", 5, listOf(
+                CategoryData("body", "بدنه", 5, listOf(
                     PartData("سپر جلو ۲۰۶ مهرکام", 2900000, 3),
                     PartData("سپر عقب ۲۰۶ مهرکام", 2300000, 3),
                     PartData("گلگیر جلو راست ۲۰۶", 3600000, 3),
@@ -321,14 +313,14 @@ object DataSeeder {
                 ))
             ))
         )),
-        "saipa" to BrandData("سایپا", "#C96A1A", 2, mapOf(
-            "pride" to ModelData("پراید", "۱۳۶۹ تا کنون", 1, mapOf(
-                "engine" to CategoryData("موتور", 1, listOf(
+        BrandData("saipa", "سایپا", "#C96A1A", 2, listOf(
+            ModelData("pride", "پراید", "۱۳۶۹ تا کنون", 1, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
                     PartData("واشر سرسیلندر پراید استاندارد سایپایدک", 650000, 20),
                     PartData("رینگ موتور پراید STD گلدن", 980000, 10),
                     PartData("پیستون کامل پراید STD گلدن", 2200000, 6),
                     PartData("تسمه تایم پراید دانگیل اصل", 350000, 25),
-                    PartData("سفت\u200Cکن تسمه تایم پراید", 280000, 15),
+                    PartData("سفت‌کن تسمه تایم پراید", 280000, 15),
                     PartData("فیلتر روغن پراید سایپایدک", 65000, 60),
                     PartData("اویل پمپ پراید سایپایدک", 850000, 8),
                     PartData("واتر پمپ پراید سایپایدک", 580000, 12),
@@ -350,7 +342,7 @@ object DataSeeder {
                     PartData("شیلنگ رادیاتور بالا پراید", 95000, 25),
                     PartData("شیلنگ رادیاتور پایین پراید", 85000, 25)
                 )),
-                "suspension" to CategoryData("جلوبندی و تعلیق", 2, listOf(
+                CategoryData("suspension", "جلوبندی و تعلیق", 2, listOf(
                     PartData("کمک فنر جلو پراید عظام", 1500000, 10),
                     PartData("کمک فنر عقب پراید عظام", 1200000, 10),
                     PartData("فنر جلو پراید", 680000, 12),
@@ -373,10 +365,9 @@ object DataSeeder {
                     PartData("کالیبر ترمز جلو پراید سایپایدک", 1350000, 6),
                     PartData("سیلندر چرخ عقب پراید", 320000, 12),
                     PartData("جعبه فرمان هیدرولیک پراید سایپایدک", 3800000, 3),
-                    PartData("میل فرمان کامل پراید", 2200000, 4),
                     PartData("تسمه فرمان پراید", 280000, 18)
                 )),
-                "electrical" to CategoryData("برق و ECU", 3, listOf(
+                CategoryData("electrical", "برق و ECU", 3, listOf(
                     PartData("دینام پراید ۹۰ آمپر عظام", 3200000, 4),
                     PartData("استارت پراید مگنتی", 2400000, 4),
                     PartData("شمع پراید یورو۴ NGK", 165000, 40),
@@ -391,16 +382,15 @@ object DataSeeder {
                     PartData("چراغ عقب پراید ۱۳۲ چپ", 980000, 6),
                     PartData("باتری پراید ۴۵ آمپر صبا", 2800000, 6)
                 )),
-                "gearbox" to CategoryData("گیربکس", 4, listOf(
+                CategoryData("gearbox", "گیربکس", 4, listOf(
                     PartData("دیسک کلاچ پراید سکو کره", 1500000, 8),
                     PartData("صفحه کلاچ پراید سکو کره", 1800000, 8),
                     PartData("بلبرینگ کلاچ پراید", 380000, 15),
                     PartData("سیم کلاچ پراید سایپایدک", 150000, 25),
                     PartData("دنده برنجی ۵ پراید پایا", 580000, 10),
-                    PartData("سیل گیربکس پراید", 75000, 30),
                     PartData("روغن گیربکس پراید ۱ لیتر", 240000, 35)
                 )),
-                "body" to CategoryData("بدنه", 5, listOf(
+                CategoryData("body", "بدنه", 5, listOf(
                     PartData("سپر جلو پراید ۱۳۲ مهرکام", 2200000, 5),
                     PartData("سپر عقب پراید ۱۳۲ مهرکام", 1800000, 5),
                     PartData("گلگیر جلو راست پراید", 2800000, 4),
@@ -412,8 +402,8 @@ object DataSeeder {
                     PartData("کاپوت پراید سایپایدک", 5500000, 2)
                 ))
             )),
-            "tiba" to ModelData("تیبا", "۱۳۸۸ تا کنون", 2, mapOf(
-                "engine" to CategoryData("موتور", 1, listOf(
+            ModelData("tiba", "تیبا", "۱۳۸۸ تا کنون", 2, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
                     PartData("واشر سرسیلندر تیبا سایپایدک", 720000, 15),
                     PartData("تسمه تایم تیبا دانگیل", 380000, 20),
                     PartData("فیلتر روغن تیبا سایپایدک", 72000, 55),
@@ -425,7 +415,7 @@ object DataSeeder {
                     PartData("رینگ موتور تیبا STD گلدن", 1050000, 8),
                     PartData("یاتاقان ثابت تیبا STD", 560000, 10)
                 )),
-                "suspension" to CategoryData("جلوبندی و تعلیق", 2, listOf(
+                CategoryData("suspension", "جلوبندی و تعلیق", 2, listOf(
                     PartData("کمک فنر جلو تیبا عظام", 1650000, 8),
                     PartData("کمک فنر عقب تیبا عظام", 1350000, 8),
                     PartData("سیبک فرمان تیبا لاهیجان", 350000, 15),
@@ -437,21 +427,20 @@ object DataSeeder {
                     PartData("بلبرینگ چرخ جلو تیبا", 510000, 10),
                     PartData("طبق کامل راست تیبا سایپایدک", 1950000, 5)
                 )),
-                "electrical" to CategoryData("برق و ECU", 3, listOf(
+                CategoryData("electrical", "برق و ECU", 3, listOf(
                     PartData("شمع تیبا یورو۴ NGK", 172000, 35),
                     PartData("دینام تیبا ۷۰ آمپر عظام", 3500000, 3),
                     PartData("سنسور اکسیژن تیبا زیمنس", 1700000, 4),
                     PartData("چراغ جلو تیبا راست", 1650000, 4),
-                    PartData("چراغ جلو تیبا چپ", 1650000, 4),
-                    PartData("کامپیوتر ECU تیبا یورو۴", 7200000, 2)
+                    PartData("چراغ جلو تیبا چپ", 1650000, 4)
                 )),
-                "gearbox" to CategoryData("گیربکس", 4, listOf(
+                CategoryData("gearbox", "گیربکس", 4, listOf(
                     PartData("دیسک کلاچ تیبا سکو", 1650000, 6),
                     PartData("صفحه کلاچ تیبا سکو", 1950000, 6),
                     PartData("بلبرینگ کلاچ تیبا کره", 410000, 12),
                     PartData("سیم کلاچ تیبا سایپایدک", 162000, 20)
                 )),
-                "body" to CategoryData("بدنه", 5, listOf(
+                CategoryData("body", "بدنه", 5, listOf(
                     PartData("سپر جلو تیبا مهرکام", 2500000, 4),
                     PartData("سپر عقب تیبا مهرکام", 2000000, 4),
                     PartData("گلگیر جلو راست تیبا", 3100000, 3),
@@ -460,8 +449,8 @@ object DataSeeder {
                     PartData("آینه بغل چپ تیبا", 1050000, 5)
                 ))
             )),
-            "saina" to ModelData("ساینا", "۱۳۹۳ تا کنون", 3, mapOf(
-                "engine" to CategoryData("موتور", 1, listOf(
+            ModelData("saina", "ساینا", "۱۳۹۳ تا کنون", 3, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
                     PartData("واشر سرسیلندر ساینا اورجینال سایپایدک", 780000, 12),
                     PartData("تسمه تایم ساینا دانگیل", 410000, 18),
                     PartData("فیلتر روغن ساینا سایپایدک", 78000, 50),
@@ -471,7 +460,7 @@ object DataSeeder {
                     PartData("ایسیو ساینا یورو۵ کروز", 7500000, 2),
                     PartData("فیلتر هوا ساینا", 168000, 25)
                 )),
-                "suspension" to CategoryData("جلوبندی و تعلیق", 2, listOf(
+                CategoryData("suspension", "جلوبندی و تعلیق", 2, listOf(
                     PartData("کمک فنر جلو ساینا عظام", 1750000, 7),
                     PartData("کمک فنر عقب ساینا عظام", 1450000, 7),
                     PartData("لنت ترمز جلو ساینا تیتان", 620000, 18),
@@ -479,19 +468,19 @@ object DataSeeder {
                     PartData("پلوس کامل راست ساینا سایپایدک", 2850000, 4),
                     PartData("سیبک فرمان ساینا لاهیجان", 368000, 13)
                 )),
-                "electrical" to CategoryData("برق و ECU", 3, listOf(
+                CategoryData("electrical", "برق و ECU", 3, listOf(
                     PartData("شمع ساینا یورو۵ NGK", 180000, 30),
                     PartData("سنسور اکسیژن ساینا یورو۵", 1850000, 4),
                     PartData("چراغ جلو ساینا راست", 1800000, 4),
                     PartData("چراغ جلو ساینا چپ", 1800000, 4),
                     PartData("دینام ساینا ۷۰ آمپر", 3600000, 3)
                 )),
-                "gearbox" to CategoryData("گیربکس", 4, listOf(
+                CategoryData("gearbox", "گیربکس", 4, listOf(
                     PartData("دیسک کلاچ ساینا سکو", 1750000, 5),
                     PartData("صفحه کلاچ ساینا سکو", 2050000, 5),
                     PartData("بلبرینگ کلاچ ساینا", 430000, 10)
                 )),
-                "body" to CategoryData("بدنه", 5, listOf(
+                CategoryData("body", "بدنه", 5, listOf(
                     PartData("سپر جلو ساینا اصلی", 2700000, 3),
                     PartData("سپر عقب ساینا اصلی", 2200000, 3),
                     PartData("گلگیر جلو راست ساینا", 3300000, 3),
@@ -499,8 +488,8 @@ object DataSeeder {
                     PartData("آینه بغل چپ ساینا", 1100000, 4)
                 ))
             )),
-            "shahin" to ModelData("شاهین", "۱۳۹۹ تا کنون", 4, mapOf(
-                "engine" to CategoryData("موتور", 1, listOf(
+            ModelData("shahin", "شاهین", "۱۳۹۹ تا کنون", 4, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
                     PartData("واشر سرسیلندر شاهین M15 سایپایدک", 850000, 10),
                     PartData("فیلتر روغن شاهین سایپایدک", 85000, 45),
                     PartData("واتر پمپ شاهین M15", 720000, 7),
@@ -508,32 +497,32 @@ object DataSeeder {
                     PartData("فیلتر هوا شاهین M15", 185000, 22),
                     PartData("تسمه تایم شاهین M15", 450000, 15)
                 )),
-                "suspension" to CategoryData("جلوبندی و تعلیق", 2, listOf(
+                CategoryData("suspension", "جلوبندی و تعلیق", 2, listOf(
                     PartData("کمک فنر جلو شاهین عظام", 1950000, 6),
                     PartData("کمک فنر عقب شاهین عظام", 1600000, 6),
                     PartData("لنت ترمز جلو شاهین تیتان", 680000, 15),
                     PartData("دیسک ترمز جلو شاهین سایپایدک", 1200000, 6),
                     PartData("پلوس کامل راست شاهین", 3100000, 3)
                 )),
-                "electrical" to CategoryData("برق و ECU", 3, listOf(
+                CategoryData("electrical", "برق و ECU", 3, listOf(
                     PartData("شمع شاهین M15 NGK", 195000, 28),
                     PartData("چراغ جلو شاهین راست", 2200000, 3),
                     PartData("چراغ جلو شاهین چپ", 2200000, 3),
                     PartData("سنسور اکسیژن شاهین", 1950000, 3)
                 )),
-                "gearbox" to CategoryData("گیربکس", 4, listOf(
+                CategoryData("gearbox", "گیربکس", 4, listOf(
                     PartData("کیت کلاچ شاهین والئو ترک", 4500000, 3),
                     PartData("بلبرینگ کلاچ شاهین", 460000, 8)
                 )),
-                "body" to CategoryData("بدنه", 5, listOf(
+                CategoryData("body", "بدنه", 5, listOf(
                     PartData("سپر جلو شاهین اصلی", 3200000, 3),
                     PartData("سپر عقب شاهین اصلی", 2600000, 3),
                     PartData("آینه بغل راست شاهین برقی", 1650000, 3),
                     PartData("آینه بغل چپ شاهین برقی", 1650000, 3)
                 ))
             )),
-            "quick" to ModelData("کوییک", "۱۳۹۷ تا کنون", 5, mapOf(
-                "engine" to CategoryData("موتور", 1, listOf(
+            ModelData("quick", "کوییک", "۱۳۹۷ تا کنون", 5, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
                     PartData("واشر سرسیلندر کوییک سایپایدک", 760000, 12),
                     PartData("فیلتر روغن کوییک سایپایدک", 75000, 48),
                     PartData("واتر پمپ کوییک سایپایدک", 660000, 8),
@@ -542,90 +531,91 @@ object DataSeeder {
                     PartData("انژکتور کوییک زیمنس", 1700000, 4),
                     PartData("فیلتر هوا کوییک", 158000, 28)
                 )),
-                "suspension" to CategoryData("جلوبندی و تعلیق", 2, listOf(
+                CategoryData("suspension", "جلوبندی و تعلیق", 2, listOf(
                     PartData("کمک فنر جلو کوییک عظام", 1700000, 7),
                     PartData("کمک فنر عقب کوییک عظام", 1400000, 7),
                     PartData("لنت ترمز جلو کوییک تیتان", 600000, 18),
                     PartData("دیسک ترمز جلو کوییک سایپایدک", 1080000, 7),
-                    PartData("جعبه فرمان کوییک دنده\u200Cای سایپایدک", 3500000, 3)
+                    PartData("جعبه فرمان کوییک دنده‌ای سایپایدک", 3500000, 3)
                 )),
-                "electrical" to CategoryData("برق و ECU", 3, listOf(
+                CategoryData("electrical", "برق و ECU", 3, listOf(
                     PartData("کویل دوبل کوییک زیمنس", 1150000, 5),
                     PartData("شمع کوییک NGK", 175000, 32),
                     PartData("چراغ جلو کوییک اس کروز راست", 1700000, 4),
                     PartData("چراغ جلو کوییک اس کروز چپ", 1700000, 4)
                 )),
-                "gearbox" to CategoryData("گیربکس", 4, listOf(
+                CategoryData("gearbox", "گیربکس", 4, listOf(
                     PartData("دیسک کلاچ کوییک سکو", 1700000, 6),
                     PartData("صفحه کلاچ کوییک سکو", 2000000, 6),
-                    PartData("بلبرینگ کلاچ کوییک", 420000, 10),
-                    PartData("پوسته گیربکس کوییک دنده\u200Cای سایپایدک", 5500000, 2)
+                    PartData("بلبرینگ کلاچ کوییک", 420000, 10)
                 )),
-                "body" to CategoryData("بدنه", 5, listOf(
+                CategoryData("body", "بدنه", 5, listOf(
                     PartData("سپر جلو کوییک اصلی", 2600000, 3),
                     PartData("سپر عقب کوییک اصلی", 2100000, 3),
                     PartData("آینه بغل راست کوییک", 1080000, 4),
                     PartData("آینه بغل چپ کوییک", 1080000, 4)
                 ))
             ))
-        )),
-        "other_cars" to BrandData("سایر خودروها", "#1F4D3A", 3, mapOf(
-            "other" to ModelData("سایر مدل\u200Cها", "", 1, mapOf(
-                "engine" to CategoryData("موتور", 1, emptyList()),
-                "suspension" to CategoryData("جلوبندی و تعلیق", 2, emptyList()),
-                "electrical" to CategoryData("برق و ECU", 3, emptyList()),
-                "gearbox" to CategoryData("گیربکس", 4, emptyList()),
-                "body" to CategoryData("بدنه", 5, emptyList())
-            ))
         ))
     )
 
-    suspend fun seedIfEmpty() {
-        try {
-            val existing = db.collection("brands").get().await()
-            if (!existing.isEmpty) return
+    // بررسی اینکه آیا داده قبلاً وارد شده
+    suspend fun isAlreadySeeded(): Boolean {
+        return try {
+            val snap = db.collection("brands").limit(1).get().await()
+            !snap.isEmpty
+        } catch (e: Exception) {
+            false
+        }
+    }
 
-            for ((brandId, brand) in DATA) {
-                db.collection("brands").document(brandId).set(mapOf(
-                    "name" to brand.name,
-                    "color" to brand.color,
-                    "order" to brand.order
-                )).await()
+    // seed کردن همه داده‌ها به Firebase
+    suspend fun seedAll(onProgress: (String) -> Unit = {}): Int {
+        var totalParts = 0
+        for (brand in BRANDS) {
+            onProgress("در حال وارد کردن ${brand.name}...")
+            db.collection("brands").document(brand.id).set(
+                mapOf("name" to brand.name, "color" to brand.color, "order" to brand.order)
+            ).await()
 
-                for ((modelId, model) in brand.models) {
-                    db.collection("brands").document(brandId)
-                        .collection("models").document(modelId)
-                        .set(mapOf(
-                            "name" to model.name,
-                            "year" to model.year,
-                            "order" to model.order
-                        )).await()
+            for (model in brand.models) {
+                onProgress("${brand.name} / ${model.name}")
+                db.collection("brands").document(brand.id)
+                    .collection("models").document(model.id)
+                    .set(mapOf("name" to model.name, "year" to model.year, "order" to model.order))
+                    .await()
 
-                    for ((catId, cat) in model.categories) {
-                        db.collection("brands").document(brandId)
-                            .collection("models").document(modelId)
-                            .collection("categories").document(catId)
-                            .set(mapOf(
-                                "name" to cat.name,
-                                "order" to cat.order
-                            )).await()
+                for (cat in model.categories) {
+                    db.collection("brands").document(brand.id)
+                        .collection("models").document(model.id)
+                        .collection("categories").document(cat.id)
+                        .set(mapOf("name" to cat.name, "order" to cat.order))
+                        .await()
 
-                        for (part in cat.parts) {
-                            db.collection("brands").document(brandId)
-                                .collection("models").document(modelId)
-                                .collection("categories").document(catId)
-                                .collection("parts").add(mapOf(
+                    for (part in cat.parts) {
+                        db.collection("brands").document(brand.id)
+                            .collection("models").document(model.id)
+                            .collection("categories").document(cat.id)
+                            .collection("parts").add(
+                                mapOf(
                                     "name" to part.name,
                                     "price" to part.price,
                                     "stock" to part.stock,
                                     "description" to ""
-                                )).await()
-                        }
+                                )
+                            ).await()
+                        totalParts++
                     }
                 }
             }
-        } catch (e: Exception) {
-            // اگه Firebase وصل نبود، دفعه بعد دوباره تلاش می‌کنه
+        }
+        return totalParts
+    }
+
+    // seed فقط اگه خالی باشه (برای SplashScreen)
+    suspend fun seedIfEmpty() {
+        if (!isAlreadySeeded()) {
+            seedAll()
         }
     }
 }

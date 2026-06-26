@@ -71,8 +71,8 @@ fun BrandSelectionScreen(
                             painter = painterResource(id = R.drawable.garage_logo),
                             contentDescription = "کاراژ",
                             modifier = Modifier
-                                .width(200.dp)
-                                .height(80.dp),
+                                .width(240.dp)
+                                .height(96.dp),
                             contentScale = ContentScale.Fit
                         )
                         Text(

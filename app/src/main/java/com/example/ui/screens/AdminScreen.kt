@@ -1,5 +1,6 @@
 package com.example.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.DataSeeder
 import com.example.data.repository.Brand
 import com.example.data.repository.CarModel
 import com.example.data.repository.Category
@@ -51,6 +53,13 @@ fun AdminScreen(
     var showAddDialog by remember { mutableStateOf(false) }
     var currentSection by remember { mutableStateOf("brands") }
 
+    // Seed dialog state
+    var showSeedDialog by remember { mutableStateOf(false) }
+    var isSeedLoading by remember { mutableStateOf(false) }
+    var seedProgress by remember { mutableStateOf("") }
+    var seedDone by remember { mutableStateOf(false) }
+    var seedCount by remember { mutableStateOf(0) }
+
     LaunchedEffect(Unit) {
         isLoading = true
         brands = repository.getBrands()
@@ -79,6 +88,92 @@ fun AdminScreen(
                 }
             }
         }
+    }
+
+    // Seed dialog
+    if (showSeedDialog) {
+        AlertDialog(
+            onDismissRequest = { if (!isSeedLoading) showSeedDialog = false },
+            containerColor = Color(0xFF142033),
+            title = {
+                Text(
+                    text = if (seedDone) "✅ راه‌اندازی تمام شد" else "راه‌اندازی اولیه",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    when {
+                        seedDone -> Text(
+                            text = "$seedCount قطعه با موفقیت وارد Firebase شد.\nاکنون می‌توانید از اپ استفاده کنید.",
+                            color = Color(0xFFA7B1C2),
+                            fontSize = 14.sp
+                        )
+                        isSeedLoading -> {
+                            LinearProgressIndicator(
+                                modifier = Modifier.fillMaxWidth(),
+                                color = Color(0xFF3B82F6),
+                                trackColor = Color(0xFF243447)
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = seedProgress.ifEmpty { "در حال وارد کردن داده‌ها..." },
+                                color = Color(0xFFA7B1C2),
+                                fontSize = 13.sp
+                            )
+                        }
+                        else -> Text(
+                            text = "این عملیات تمام برندها، مدل‌ها، دسته‌بندی‌ها و قطعات پیش‌فرض را وارد Firebase می‌کند.\n\nشامل ۱۰ مدل:\nپراید، تیبا، ساینا، شاهین، کوییک\nپژو ۴۰۵، پارس، سمند، دنا، ۲۰۶\n\nحدود ۴۵۰ قطعه.",
+                            color = Color(0xFFA7B1C2),
+                            fontSize = 13.sp
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                when {
+                    seedDone -> Button(
+                        onClick = {
+                            showSeedDialog = false
+                            seedDone = false
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))
+                    ) {
+                        Text("بستن", color = Color.White)
+                    }
+                    !isSeedLoading -> Button(
+                        onClick = {
+                            isSeedLoading = true
+                            scope.launch {
+                                try {
+                                    val count = DataSeeder.seedAll { progress ->
+                                        seedProgress = progress
+                                    }
+                                    seedCount = count
+                                    seedDone = true
+                                    brands = repository.getBrands()
+                                } catch (e: Exception) {
+                                    seedProgress = "خطا: ${e.message}"
+                                    isSeedLoading = false
+                                }
+                                isSeedLoading = false
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))
+                    ) {
+                        Text("شروع راه‌اندازی", color = Color.White)
+                    }
+                }
+            },
+            dismissButton = {
+                if (!isSeedLoading && !seedDone) {
+                    TextButton(onClick = { showSeedDialog = false }) {
+                        Text("انصراف", color = Color(0xFFA7B1C2))
+                    }
+                }
+            }
+        )
     }
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -263,6 +358,29 @@ fun AdminScreen(
                                             }
                                         }
                                     )
+                                }
+                                // دکمه راه‌اندازی اولیه
+                                item {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    OutlinedButton(
+                                        onClick = { showSeedDialog = true },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        border = BorderStroke(1.dp, Color(0xFF3B82F6).copy(alpha = 0.5f)),
+                                        shape = RoundedCornerShape(12.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.CloudUpload,
+                                            contentDescription = null,
+                                            tint = Color(0xFF3B82F6),
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = "راه‌اندازی اولیه (وارد کردن قطعات پیش‌فرض)",
+                                            color = Color(0xFF3B82F6),
+                                            fontSize = 13.sp
+                                        )
+                                    }
                                 }
                             }
                         }

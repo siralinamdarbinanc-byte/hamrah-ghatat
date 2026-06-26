@@ -62,7 +62,7 @@ fun BrandSelectionScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFE31E24))
+                        .background(Color(0xFF0D2C54))
                         .padding(horizontal = 24.dp, vertical = 32.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -257,7 +257,7 @@ fun FeatureItemLight(icon: androidx.compose.ui.graphics.vector.ImageVector, titl
             Icon(
                 imageVector = icon,
                 contentDescription = title,
-                tint = Color(0xFFE31E24),
+                tint = Color(0xFF0D2C54),
                 modifier = Modifier.size(24.dp)
             )
         }

@@ -187,7 +187,7 @@ fun BrandCardLight(
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF0A3D91)
+            containerColor = Color.White
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 2.dp
@@ -233,7 +233,7 @@ fun BrandCardLight(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = "انتخاب",
-                tint = Color(0xFFCCCCCC),
+                tint = Color(0xFF003087),
                 modifier = Modifier.size(24.dp)
             )
         }

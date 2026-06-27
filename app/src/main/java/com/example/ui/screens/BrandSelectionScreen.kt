@@ -267,7 +267,7 @@ fun FeatureItemLight(icon: androidx.compose.ui.graphics.vector.ImageVector, titl
             text = title,
             fontSize = 10.sp,
             fontWeight = FontWeight.Medium,
-            color = Color(0xFF1A1A1A),
+            color = Color.White,
             textAlign = TextAlign.Center,
             maxLines = 2,
             softWrap = true

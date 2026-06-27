@@ -61,7 +61,7 @@ fun SplashScreen(
             painter = painterResource(id = R.drawable.img_car_parts_splash),
             contentDescription = "یدک مارکت",
             modifier = Modifier
-                .width(300.dp)
+                .width(450.dp)
                 .alpha(alphaAnim.value),
             contentScale = ContentScale.Fit
         )

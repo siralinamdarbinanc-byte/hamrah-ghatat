@@ -556,6 +556,379 @@ object DataSeeder {
                     PartData("آینه بغل چپ کوییک", 1080000, 4)
                 ))
             ))
+        )),
+        BrandData("other_cars", "سایر خودروها", "#28A745", 3, listOf(
+            ModelData("toyota_camry", "تویوتا کمری", "۱۳۷۰ تا کنون", 1, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
+                    PartData("فیلتر روغن کمری", 0, 0),
+                    PartData("فیلتر هوا کمری", 0, 0),
+                    PartData("فیلتر سوخت کمری", 0, 0),
+                    PartData("شمع کمری", 0, 0),
+                    PartData("تسمه تایم کمری", 0, 0),
+                    PartData("تسمه دینام کمری", 0, 0),
+                    PartData("واتر پمپ کمری", 0, 0),
+                    PartData("ترموستات کمری", 0, 0),
+                    PartData("واشر سرسیلندر کمری", 0, 0),
+                    PartData("واشر منیفولد کمری", 0, 0),
+                    PartData("کاسه نمد کمری", 0, 0)
+                )),
+                CategoryData("brakes", "ترمز", 2, listOf(
+                    PartData("لنت ترمز جلو کمری", 0, 0),
+                    PartData("لنت ترمز عقب کمری", 0, 0),
+                    PartData("دیسک ترمز جلو کمری", 0, 0),
+                    PartData("دیسک ترمز عقب کمری", 0, 0),
+                    PartData("کاسه چرخ کمری", 0, 0),
+                    PartData("سیلندر ترمز کمری", 0, 0)
+                )),
+                CategoryData("suspension", "جلوبندی", 3, listOf(
+                    PartData("سیبک فرمان کمری", 0, 0),
+                    PartData("سیبک بالا کمری", 0, 0),
+                    PartData("کمک فنر جلو کمری", 0, 0),
+                    PartData("کمک فنر عقب کمری", 0, 0),
+                    PartData("لاستیک گردگیر کمری", 0, 0),
+                    PartData("طبق کمری", 0, 0)
+                )),
+                CategoryData("electrical", "برق", 4, listOf(
+                    PartData("باتری کمری", 0, 0),
+                    PartData("دینام کمری", 0, 0),
+                    PartData("استارت کمری", 0, 0),
+                    PartData("سنسور اکسیژن کمری", 0, 0),
+                    PartData("سنسور میل لنگ کمری", 0, 0)
+                )),
+                CategoryData("body", "بدنه", 5, listOf(
+                    PartData("سپر جلو کمری", 0, 0),
+                    PartData("سپر عقب کمری", 0, 0),
+                    PartData("چراغ جلو کمری", 0, 0),
+                    PartData("چراغ عقب کمری", 0, 0),
+                    PartData("شیشه جلو کمری", 0, 0),
+                    PartData("آینه بغل کمری", 0, 0)
+                )),
+                CategoryData("cooling", "خنک‌کاری", 6, listOf(
+                    PartData("رادیاتور کمری", 0, 0),
+                    PartData("فن رادیاتور کمری", 0, 0),
+                    PartData("شلنگ رادیاتور کمری", 0, 0)
+                ))
+            )),
+            ModelData("kia_pride", "کیا پراید", "۱۳۶۸ تا ۱۳۸۰", 2, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
+                    PartData("فیلتر روغن کیا پراید", 0, 0),
+                    PartData("فیلتر هوا کیا پراید", 0, 0),
+                    PartData("فیلتر سوخت کیا پراید", 0, 0),
+                    PartData("شمع کیا پراید", 0, 0),
+                    PartData("تسمه تایم کیا پراید", 0, 0),
+                    PartData("تسمه دینام کیا پراید", 0, 0),
+                    PartData("واتر پمپ کیا پراید", 0, 0),
+                    PartData("واشر سرسیلندر کیا پراید", 0, 0),
+                    PartData("واشر منیفولد کیا پراید", 0, 0)
+                )),
+                CategoryData("brakes", "ترمز", 2, listOf(
+                    PartData("لنت ترمز جلو کیا پراید", 0, 0),
+                    PartData("لنت ترمز عقب کیا پراید", 0, 0),
+                    PartData("کاسه چرخ کیا پراید", 0, 0),
+                    PartData("سیلندر ترمز کیا پراید", 0, 0)
+                )),
+                CategoryData("suspension", "جلوبندی", 3, listOf(
+                    PartData("سیبک کیا پراید", 0, 0),
+                    PartData("کمک فنر جلو کیا پراید", 0, 0),
+                    PartData("کمک فنر عقب کیا پراید", 0, 0),
+                    PartData("طبق کیا پراید", 0, 0)
+                )),
+                CategoryData("body", "بدنه", 4, listOf(
+                    PartData("سپر جلو کیا پراید", 0, 0),
+                    PartData("سپر عقب کیا پراید", 0, 0),
+                    PartData("چراغ جلو کیا پراید", 0, 0),
+                    PartData("شیشه جلو کیا پراید", 0, 0),
+                    PartData("آینه بغل کیا پراید", 0, 0)
+                ))
+            )),
+            ModelData("hyundai_sonata", "هیوندای سوناتا", "۱۳۷۵ تا کنون", 3, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
+                    PartData("فیلتر روغن سوناتا", 0, 0),
+                    PartData("فیلتر هوا سوناتا", 0, 0),
+                    PartData("فیلتر سوخت سوناتا", 0, 0),
+                    PartData("شمع سوناتا NGK", 0, 0),
+                    PartData("تسمه تایم سوناتا", 0, 0),
+                    PartData("واتر پمپ سوناتا", 0, 0),
+                    PartData("ترموستات سوناتا", 0, 0),
+                    PartData("واشر سرسیلندر سوناتا", 0, 0)
+                )),
+                CategoryData("brakes", "ترمز", 2, listOf(
+                    PartData("لنت ترمز جلو سوناتا", 0, 0),
+                    PartData("لنت ترمز عقب سوناتا", 0, 0),
+                    PartData("دیسک ترمز جلو سوناتا", 0, 0),
+                    PartData("دیسک ترمز عقب سوناتا", 0, 0)
+                )),
+                CategoryData("electrical", "برق", 3, listOf(
+                    PartData("باتری سوناتا ۷۴ آمپر", 0, 0),
+                    PartData("دینام سوناتا", 0, 0),
+                    PartData("استارت سوناتا", 0, 0),
+                    PartData("سنسور اکسیژن سوناتا", 0, 0),
+                    PartData("سنسور دور موتور سوناتا", 0, 0)
+                )),
+                CategoryData("suspension", "جلوبندی", 4, listOf(
+                    PartData("کمک فنر جلو سوناتا", 0, 0),
+                    PartData("کمک فنر عقب سوناتا", 0, 0),
+                    PartData("سیبک فرمان سوناتا", 0, 0),
+                    PartData("طبق سوناتا", 0, 0)
+                )),
+                CategoryData("body", "بدنه", 5, listOf(
+                    PartData("سپر جلو سوناتا", 0, 0),
+                    PartData("سپر عقب سوناتا", 0, 0),
+                    PartData("چراغ جلو سوناتا", 0, 0),
+                    PartData("شیشه جلو سوناتا", 0, 0),
+                    PartData("آینه بغل سوناتا", 0, 0)
+                ))
+            )),
+            ModelData("kia_cerato", "کیا سراتو", "۱۳۸۹ تا کنون", 4, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
+                    PartData("فیلتر روغن سراتو", 0, 0),
+                    PartData("فیلتر هوا سراتو", 0, 0),
+                    PartData("فیلتر سوخت سراتو", 0, 0),
+                    PartData("شمع سراتو NGK", 0, 0),
+                    PartData("تسمه دینام سراتو", 0, 0),
+                    PartData("تسمه تایم سراتو", 0, 0),
+                    PartData("واتر پمپ سراتو", 0, 0),
+                    PartData("ترموستات سراتو", 0, 0)
+                )),
+                CategoryData("brakes", "ترمز", 2, listOf(
+                    PartData("لنت ترمز جلو سراتو", 0, 0),
+                    PartData("لنت ترمز عقب سراتو", 0, 0),
+                    PartData("دیسک ترمز جلو سراتو", 0, 0),
+                    PartData("دیسک ترمز عقب سراتو", 0, 0)
+                )),
+                CategoryData("suspension", "جلوبندی", 3, listOf(
+                    PartData("کمک فنر جلو سراتو", 0, 0),
+                    PartData("کمک فنر عقب سراتو", 0, 0),
+                    PartData("سیبک سراتو", 0, 0),
+                    PartData("طبق سراتو", 0, 0)
+                )),
+                CategoryData("electrical", "برق", 4, listOf(
+                    PartData("باتری سراتو", 0, 0),
+                    PartData("دینام سراتو", 0, 0),
+                    PartData("استارت سراتو", 0, 0),
+                    PartData("سنسور کوبش سراتو", 0, 0)
+                )),
+                CategoryData("cooling", "خنک‌کاری", 5, listOf(
+                    PartData("رادیاتور سراتو", 0, 0),
+                    PartData("فن رادیاتور سراتو", 0, 0)
+                ))
+            )),
+            ModelData("hyundai_tucson", "هیوندای توسان", "۱۳۸۹ تا کنون", 5, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
+                    PartData("فیلتر روغن توسان", 0, 0),
+                    PartData("فیلتر هوا توسان", 0, 0),
+                    PartData("فیلتر سوخت توسان", 0, 0),
+                    PartData("شمع توسان NGK", 0, 0),
+                    PartData("واتر پمپ توسان", 0, 0),
+                    PartData("ترموستات توسان", 0, 0),
+                    PartData("تسمه تایم توسان", 0, 0),
+                    PartData("تسمه دینام توسان", 0, 0)
+                )),
+                CategoryData("brakes", "ترمز", 2, listOf(
+                    PartData("لنت ترمز جلو توسان", 0, 0),
+                    PartData("لنت ترمز عقب توسان", 0, 0),
+                    PartData("دیسک ترمز جلو توسان", 0, 0),
+                    PartData("دیسک ترمز عقب توسان", 0, 0)
+                )),
+                CategoryData("electrical", "برق", 3, listOf(
+                    PartData("باتری توسان ۷۴ آمپر", 0, 0),
+                    PartData("دینام توسان", 0, 0),
+                    PartData("استارت توسان", 0, 0),
+                    PartData("سنسور اکسیژن توسان", 0, 0)
+                )),
+                CategoryData("suspension", "جلوبندی", 4, listOf(
+                    PartData("کمک فنر جلو توسان", 0, 0),
+                    PartData("کمک فنر عقب توسان", 0, 0),
+                    PartData("سیبک فرمان توسان", 0, 0),
+                    PartData("طبق توسان", 0, 0)
+                )),
+                CategoryData("body", "بدنه", 5, listOf(
+                    PartData("سپر جلو توسان", 0, 0),
+                    PartData("سپر عقب توسان", 0, 0),
+                    PartData("چراغ جلو توسان", 0, 0),
+                    PartData("چراغ عقب توسان", 0, 0),
+                    PartData("شیشه جلو توسان", 0, 0)
+                ))
+            )),
+            ModelData("toyota_corolla", "تویوتا کرولا", "۱۳۸۷ تا کنون", 6, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
+                    PartData("فیلتر روغن کرولا", 0, 0),
+                    PartData("فیلتر هوا کرولا", 0, 0),
+                    PartData("فیلتر سوخت کرولا", 0, 0),
+                    PartData("شمع کرولا NGK", 0, 0),
+                    PartData("تسمه تایم کرولا", 0, 0),
+                    PartData("واتر پمپ کرولا", 0, 0),
+                    PartData("ترموستات کرولا", 0, 0),
+                    PartData("واشر سرسیلندر کرولا", 0, 0)
+                )),
+                CategoryData("brakes", "ترمز", 2, listOf(
+                    PartData("لنت ترمز جلو کرولا", 0, 0),
+                    PartData("لنت ترمز عقب کرولا", 0, 0),
+                    PartData("دیسک ترمز جلو کرولا", 0, 0),
+                    PartData("دیسک ترمز عقب کرولا", 0, 0)
+                )),
+                CategoryData("body", "بدنه", 3, listOf(
+                    PartData("سپر جلو کرولا", 0, 0),
+                    PartData("سپر عقب کرولا", 0, 0),
+                    PartData("چراغ جلو کرولا", 0, 0),
+                    PartData("شیشه جلو کرولا", 0, 0),
+                    PartData("آینه بغل کرولا", 0, 0)
+                )),
+                CategoryData("electrical", "برق", 4, listOf(
+                    PartData("باتری کرولا", 0, 0),
+                    PartData("دینام کرولا", 0, 0),
+                    PartData("استارت کرولا", 0, 0)
+                )),
+                CategoryData("suspension", "جلوبندی", 5, listOf(
+                    PartData("کمک فنر جلو کرولا", 0, 0),
+                    PartData("کمک فنر عقب کرولا", 0, 0),
+                    PartData("سیبک فرمان کرولا", 0, 0),
+                    PartData("طبق کرولا", 0, 0)
+                ))
+            )),
+            ModelData("nissan_sunny", "نیسان سانی", "۱۳۹۰ تا کنون", 7, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
+                    PartData("فیلتر روغن سانی", 0, 0),
+                    PartData("فیلتر هوا سانی", 0, 0),
+                    PartData("فیلتر سوخت سانی", 0, 0),
+                    PartData("شمع سانی", 0, 0),
+                    PartData("تسمه تایم سانی", 0, 0),
+                    PartData("واتر پمپ سانی", 0, 0),
+                    PartData("ترموستات سانی", 0, 0)
+                )),
+                CategoryData("brakes", "ترمز", 2, listOf(
+                    PartData("لنت ترمز جلو سانی", 0, 0),
+                    PartData("لنت ترمز عقب سانی", 0, 0),
+                    PartData("کاسه چرخ سانی", 0, 0),
+                    PartData("سیلندر ترمز سانی", 0, 0)
+                )),
+                CategoryData("electrical", "برق", 3, listOf(
+                    PartData("استارت سانی", 0, 0),
+                    PartData("دینام سانی", 0, 0),
+                    PartData("باتری سانی", 0, 0),
+                    PartData("سنسور اکسیژن سانی", 0, 0)
+                )),
+                CategoryData("suspension", "جلوبندی", 4, listOf(
+                    PartData("کمک فنر جلو سانی", 0, 0),
+                    PartData("کمک فنر عقب سانی", 0, 0),
+                    PartData("سیبک فرمان سانی", 0, 0),
+                    PartData("طبق سانی", 0, 0)
+                )),
+                CategoryData("body", "بدنه", 5, listOf(
+                    PartData("سپر جلو سانی", 0, 0),
+                    PartData("سپر عقب سانی", 0, 0),
+                    PartData("چراغ جلو سانی", 0, 0),
+                    PartData("شیشه جلو سانی", 0, 0),
+                    PartData("آینه بغل سانی", 0, 0)
+                ))
+            )),
+            ModelData("mitsubishi_lancer", "میتسوبیشی لنسر", "۱۳۸۴ تا کنون", 8, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
+                    PartData("فیلتر روغن لنسر", 0, 0),
+                    PartData("فیلتر هوا لنسر", 0, 0),
+                    PartData("فیلتر سوخت لنسر", 0, 0),
+                    PartData("شمع لنسر NGK", 0, 0),
+                    PartData("تسمه تایم لنسر", 0, 0),
+                    PartData("واتر پمپ لنسر", 0, 0),
+                    PartData("ترموستات لنسر", 0, 0),
+                    PartData("واشر سرسیلندر لنسر", 0, 0)
+                )),
+                CategoryData("brakes", "ترمز", 2, listOf(
+                    PartData("لنت ترمز جلو لنسر", 0, 0),
+                    PartData("لنت ترمز عقب لنسر", 0, 0),
+                    PartData("دیسک ترمز جلو لنسر", 0, 0),
+                    PartData("دیسک ترمز عقب لنسر", 0, 0)
+                )),
+                CategoryData("suspension", "جلوبندی", 3, listOf(
+                    PartData("کمک فنر جلو لنسر", 0, 0),
+                    PartData("کمک فنر عقب لنسر", 0, 0),
+                    PartData("سیبک لنسر", 0, 0),
+                    PartData("طبق لنسر", 0, 0)
+                )),
+                CategoryData("electrical", "برق", 4, listOf(
+                    PartData("باتری لنسر", 0, 0),
+                    PartData("دینام لنسر", 0, 0),
+                    PartData("استارت لنسر", 0, 0),
+                    PartData("سنسور اکسیژن لنسر", 0, 0)
+                )),
+                CategoryData("body", "بدنه", 5, listOf(
+                    PartData("سپر جلو لنسر", 0, 0),
+                    PartData("سپر عقب لنسر", 0, 0),
+                    PartData("چراغ جلو لنسر", 0, 0),
+                    PartData("شیشه جلو لنسر", 0, 0),
+                    PartData("آینه بغل لنسر", 0, 0)
+                ))
+            )),
+            ModelData("chery_tiggo5", "چری تیگو ۵", "۱۳۹۵ تا کنون", 9, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
+                    PartData("فیلتر روغن تیگو ۵", 0, 0),
+                    PartData("فیلتر هوا تیگو ۵", 0, 0),
+                    PartData("فیلتر سوخت تیگو ۵", 0, 0),
+                    PartData("شمع تیگو ۵", 0, 0),
+                    PartData("تسمه تایم تیگو ۵", 0, 0),
+                    PartData("واتر پمپ تیگو ۵", 0, 0),
+                    PartData("ترموستات تیگو ۵", 0, 0)
+                )),
+                CategoryData("brakes", "ترمز", 2, listOf(
+                    PartData("لنت ترمز جلو تیگو ۵", 0, 0),
+                    PartData("لنت ترمز عقب تیگو ۵", 0, 0),
+                    PartData("دیسک ترمز جلو تیگو ۵", 0, 0),
+                    PartData("دیسک ترمز عقب تیگو ۵", 0, 0)
+                )),
+                CategoryData("body", "بدنه", 3, listOf(
+                    PartData("سپر جلو تیگو ۵", 0, 0),
+                    PartData("سپر عقب تیگو ۵", 0, 0),
+                    PartData("چراغ جلو تیگو ۵", 0, 0),
+                    PartData("چراغ عقب تیگو ۵", 0, 0),
+                    PartData("شیشه جلو تیگو ۵", 0, 0)
+                )),
+                CategoryData("electrical", "برق", 4, listOf(
+                    PartData("باتری تیگو ۵", 0, 0),
+                    PartData("دینام تیگو ۵", 0, 0),
+                    PartData("استارت تیگو ۵", 0, 0)
+                )),
+                CategoryData("suspension", "جلوبندی", 5, listOf(
+                    PartData("کمک فنر جلو تیگو ۵", 0, 0),
+                    PartData("کمک فنر عقب تیگو ۵", 0, 0),
+                    PartData("سیبک فرمان تیگو ۵", 0, 0),
+                    PartData("طبق تیگو ۵", 0, 0)
+                ))
+            )),
+            ModelData("geely_emgrand7", "جیلی امگرند ۷", "۱۳۹۳ تا کنون", 10, listOf(
+                CategoryData("engine", "موتور", 1, listOf(
+                    PartData("فیلتر روغن امگرند ۷", 0, 0),
+                    PartData("فیلتر هوا امگرند ۷", 0, 0),
+                    PartData("فیلتر سوخت امگرند ۷", 0, 0),
+                    PartData("شمع امگرند ۷", 0, 0),
+                    PartData("تسمه تایم امگرند ۷", 0, 0),
+                    PartData("واتر پمپ امگرند ۷", 0, 0),
+                    PartData("ترموستات امگرند ۷", 0, 0)
+                )),
+                CategoryData("brakes", "ترمز", 2, listOf(
+                    PartData("لنت ترمز جلو امگرند ۷", 0, 0),
+                    PartData("لنت ترمز عقب امگرند ۷", 0, 0),
+                    PartData("دیسک ترمز جلو امگرند ۷", 0, 0),
+                    PartData("دیسک ترمز عقب امگرند ۷", 0, 0)
+                )),
+                CategoryData("electrical", "برق", 3, listOf(
+                    PartData("باتری امگرند ۷ ۶۰ آمپر", 0, 0),
+                    PartData("دینام امگرند ۷", 0, 0),
+                    PartData("استارت امگرند ۷", 0, 0)
+                )),
+                CategoryData("suspension", "جلوبندی", 4, listOf(
+                    PartData("کمک فنر جلو امگرند ۷", 0, 0),
+                    PartData("کمک فنر عقب امگرند ۷", 0, 0),
+                    PartData("سیبک فرمان امگرند ۷", 0, 0),
+                    PartData("طبق امگرند ۷", 0, 0)
+                )),
+                CategoryData("body", "بدنه", 5, listOf(
+                    PartData("سپر جلو امگرند ۷", 0, 0),
+                    PartData("سپر عقب امگرند ۷", 0, 0),
+                    PartData("چراغ جلو امگرند ۷", 0, 0),
+                    PartData("شیشه جلو امگرند ۷", 0, 0),
+                    PartData("آینه بغل امگرند ۷", 0, 0)
+                ))
+            ))
         ))
     )
 
@@ -612,7 +985,57 @@ object DataSeeder {
         return totalParts
     }
 
-    // seed فقط اگه خالی باشه (برای SplashScreen)
+
+    // پاک کردن و seed مجدد با progress درصدی
+    suspend fun forceReseed(onProgress: (String, Int, Int) -> Unit = { _, _, _ -> }): Int {
+        val total = BRANDS.sumOf { b -> b.models.sumOf { m -> m.categories.sumOf { c -> c.parts.size } } }
+        var current = 0
+
+        onProgress("در حال پاک کردن داده‌های قدیمی...", 0, total)
+        for (brand in BRANDS) {
+            for (model in brand.models) {
+                for (cat in model.categories) {
+                    val partsRef = db.collection("brands").document(brand.id)
+                        .collection("models").document(model.id)
+                        .collection("categories").document(cat.id)
+                        .collection("parts")
+                    val snap = partsRef.get().await()
+                    for (doc in snap.documents) { doc.reference.delete().await() }
+                }
+            }
+        }
+
+        for (brand in BRANDS) {
+            onProgress("وارد کردن ${brand.name}...", current, total)
+            db.collection("brands").document(brand.id).set(
+                mapOf("name" to brand.name, "color" to brand.color, "order" to brand.order)
+            ).await()
+            for (model in brand.models) {
+                db.collection("brands").document(brand.id)
+                    .collection("models").document(model.id)
+                    .set(mapOf("name" to model.name, "year" to model.year, "order" to model.order)).await()
+                for (cat in model.categories) {
+                    db.collection("brands").document(brand.id)
+                        .collection("models").document(model.id)
+                        .collection("categories").document(cat.id)
+                        .set(mapOf("name" to cat.name, "order" to cat.order)).await()
+                    for (part in cat.parts) {
+                        db.collection("brands").document(brand.id)
+                            .collection("models").document(model.id)
+                            .collection("categories").document(cat.id)
+                            .collection("parts").add(
+                                mapOf("name" to part.name, "price" to part.price, "stock" to part.stock, "description" to "")
+                            ).await()
+                        current++
+                        onProgress("${brand.name} / ${model.name}", current, total)
+                    }
+                }
+            }
+        }
+        return current
+    }
+
+        // seed فقط اگه خالی باشه (برای SplashScreen)
     suspend fun seedIfEmpty() {
         if (!isAlreadySeeded()) {
             seedAll()

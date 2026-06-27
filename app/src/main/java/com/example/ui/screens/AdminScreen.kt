@@ -59,6 +59,8 @@ fun AdminScreen(
     var seedProgress by remember { mutableStateOf("") }
     var seedDone by remember { mutableStateOf(false) }
     var seedCount by remember { mutableStateOf(0) }
+    var seedTotal by remember { mutableStateOf(0) }
+    var seedPercent by remember { mutableStateOf(0f) }
 
     LaunchedEffect(Unit) {
         isLoading = true
@@ -112,16 +114,29 @@ fun AdminScreen(
                         )
                         isSeedLoading -> {
                             LinearProgressIndicator(
+                                progress = { seedPercent },
                                 modifier = Modifier.fillMaxWidth(),
                                 color = Color(0xFF3B82F6),
                                 trackColor = Color(0xFF243447)
                             )
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = seedProgress.ifEmpty { "در حال وارد کردن داده‌ها..." },
-                                color = Color(0xFFA7B1C2),
-                                fontSize = 13.sp
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = seedProgress.ifEmpty { "در حال وارد کردن..." },
+                                    color = Color(0xFFA7B1C2),
+                                    fontSize = 12.sp,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Text(
+                                    text = "${(seedPercent * 100).toInt()}%",
+                                    color = Color(0xFF3B82F6),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                         else -> Text(
                             text = "این عملیات تمام برندها، مدل‌ها، دسته‌بندی‌ها و قطعات پیش‌فرض را وارد Firebase می‌کند.\n\nشامل ۱۰ مدل:\nپراید، تیبا، ساینا، شاهین، کوییک\nپژو ۴۰۵، پارس، سمند، دنا، ۲۰۶\n\nحدود ۴۵۰ قطعه.",
@@ -145,12 +160,17 @@ fun AdminScreen(
                     !isSeedLoading -> Button(
                         onClick = {
                             isSeedLoading = true
+                            seedPercent = 0f
+                            seedTotal = 0
                             scope.launch {
                                 try {
-                                    val count = DataSeeder.seedAll { progress ->
+                                    val count = DataSeeder.forceReseed { progress, current, total ->
                                         seedProgress = progress
+                                        seedTotal = total
+                                        seedPercent = if (total > 0) current.toFloat() / total else 0f
                                     }
                                     seedCount = count
+                                    seedPercent = 1f
                                     seedDone = true
                                     brands = repository.getBrands()
                                 } catch (e: Exception) {
@@ -473,7 +493,8 @@ fun AdminItemCard(
     title: String,
     subtitle: String = "",
     onClick: (() -> Unit)? = null,
-    onDelete: (() -> Unit)? = null
+    onDelete: (() -> Unit)? = null,
+    onEdit: (() -> Unit)? = null
 ) {
     Card(
         modifier = Modifier
@@ -494,6 +515,11 @@ fun AdminItemCard(
                 Text(text = title, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 if (subtitle.isNotEmpty()) {
                     Text(text = subtitle, fontSize = 12.sp, color = Color(0xFFA7B1C2))
+                }
+            }
+            onEdit?.let {
+                IconButton(onClick = it) {
+                    Icon(Icons.Default.Edit, contentDescription = "ویرایش", tint = Color(0xFF3B82F6).copy(alpha = 0.8f))
                 }
             }
             onDelete?.let {

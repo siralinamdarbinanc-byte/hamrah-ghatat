@@ -94,7 +94,7 @@ fun BrandSelectionScreen(
                     BrandCardLight(
                         title = "ایران‌خودرو",
                         subtitle = "قطعات خودروهای ایران‌خودرو",
-                        iconColor = Color(0xFF0066CC), // آبی
+                        iconColor = Color(0xFF003087),
                         onClick = onNavigateToIranKhodro,
                         logoContent = {
                             Icon(
@@ -114,7 +114,7 @@ fun BrandSelectionScreen(
                     BrandCardLight(
                         title = "سایپا",
                         subtitle = "قطعات خودروهای سایپا",
-                        iconColor = Color(0xFFFF6B00), // نارنجی
+                        iconColor = Color(0xFF003087), // نارنجی
                         onClick = onNavigateToSaipa,
                         logoContent = {
                             Icon(
@@ -134,7 +134,7 @@ fun BrandSelectionScreen(
                     BrandCardLight(
                         title = "سایر خودروها",
                         subtitle = "قطعات سایر برندهای خودرو",
-                        iconColor = Color(0xFF28A745), // سبز
+                        iconColor = Color(0xFF003087), // سبز
                         onClick = onNavigateToOtherCars,
                         logoContent = {
                             Icon(
@@ -233,7 +233,7 @@ fun BrandCardLight(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = "انتخاب",
-                tint = Color(0xFF003087),
+                tint = Color.White,
                 modifier = Modifier.size(24.dp)
             )
         }
@@ -244,20 +244,21 @@ fun BrandCardLight(
 fun FeatureItemLight(icon: androidx.compose.ui.graphics.vector.ImageVector, title: String) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.width(72.dp)
     ) {
         Box(
             modifier = Modifier
                 .size(50.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color.White)
+                .background(Color(0xFF003087))
                 .border(1.dp, Color(0xFFF0F0F0), RoundedCornerShape(12.dp)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = title,
-                tint = Color(0xFF003087),
+                tint = Color.White,
                 modifier = Modifier.size(24.dp)
             )
         }
@@ -267,7 +268,9 @@ fun FeatureItemLight(icon: androidx.compose.ui.graphics.vector.ImageVector, titl
             fontSize = 10.sp,
             fontWeight = FontWeight.Medium,
             color = Color(0xFF1A1A1A),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            softWrap = true
         )
     }
 }

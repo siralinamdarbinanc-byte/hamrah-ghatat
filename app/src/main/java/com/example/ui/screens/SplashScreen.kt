@@ -41,7 +41,7 @@ fun SplashScreen(
         modifier = modifier
             .fillMaxSize()
             .background(Color(0xFF0A1628)),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.CenterStart
     ) {
         // گردیانت نرم پشت لوگو
         Box(

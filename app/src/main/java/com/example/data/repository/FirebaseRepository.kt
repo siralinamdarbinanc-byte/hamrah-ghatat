@@ -235,6 +235,49 @@ class FirebaseRepository {
         }
     }
 
+
+    suspend fun updateBrand(brand: Brand): Result<Unit> {
+        return try {
+            db.collection("brands").document(brand.id)
+                .update(mapOf("name" to brand.name, "color" to brand.color, "order" to brand.order))
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun updateModel(brandId: String, model: CarModel): Result<Unit> {
+        return try {
+            db.collection("brands").document(brandId)
+                .collection("models").document(model.id)
+                .update(mapOf("name" to model.name, "year" to model.year, "order" to model.order))
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun updateCategory(brandId: String, modelId: String, category: Category): Result<Unit> {
+        return try {
+            db.collection("brands").document(brandId)
+                .collection("models").document(modelId)
+                .collection("categories").document(category.id)
+                .update(mapOf("name" to category.name, "order" to category.order))
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun updatePart(brandId: String, modelId: String, categoryId: String, part: Part): Result<Unit> {
+        return try {
+            db.collection("brands").document(brandId)
+                .collection("models").document(modelId)
+                .collection("categories").document(categoryId)
+                .collection("parts").document(part.id)
+                .update(mapOf("name" to part.name, "price" to part.price, "stock" to part.stock, "description" to part.description))
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
     suspend fun deletePart(brandId: String, modelId: String, categoryId: String, partId: String): Result<Unit> {
         return try {
             db.collection("brands")

@@ -55,6 +55,11 @@ fun AdminScreen(
 
     // Seed dialog state
     var showSeedDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
+    var editingBrand by remember { mutableStateOf<Brand?>(null) }
+    var editingModel by remember { mutableStateOf<CarModel?>(null) }
+    var editingCategory by remember { mutableStateOf<Category?>(null) }
+    var editingPart by remember { mutableStateOf<Part?>(null) }
     var isSeedLoading by remember { mutableStateOf(false) }
     var seedProgress by remember { mutableStateOf("") }
     var seedDone by remember { mutableStateOf(false) }
@@ -196,6 +201,48 @@ fun AdminScreen(
         )
     }
 
+    if (showEditDialog) {
+        EditItemDialog(
+            editingPart = editingPart,
+            editingCategory = editingCategory,
+            editingModel = editingModel,
+            editingBrand = editingBrand,
+            onDismiss = {
+                showEditDialog = false
+                editingPart = null; editingCategory = null
+                editingModel = null; editingBrand = null
+            },
+            onSave = { name, extra1, extra2 ->
+                scope.launch {
+                    when {
+                        editingPart != null -> {
+                            repository.updatePart(
+                                selectedBrand!!.id, selectedModel!!.id, selectedCategory!!.id,
+                                editingPart!!.copy(name = name, price = extra1.toLongOrNull() ?: 0, stock = extra2.toIntOrNull() ?: 0)
+                            )
+                            parts = repository.getParts(selectedBrand!!.id, selectedModel!!.id, selectedCategory!!.id)
+                        }
+                        editingCategory != null -> {
+                            repository.updateCategory(selectedBrand!!.id, selectedModel!!.id, editingCategory!!.copy(name = name))
+                            categories = repository.getCategories(selectedBrand!!.id, selectedModel!!.id)
+                        }
+                        editingModel != null -> {
+                            repository.updateModel(selectedBrand!!.id, editingModel!!.copy(name = name, year = extra1))
+                            models = repository.getModels(selectedBrand!!.id)
+                        }
+                        editingBrand != null -> {
+                            repository.updateBrand(editingBrand!!.copy(name = name, color = extra1))
+                            brands = repository.getBrands()
+                        }
+                    }
+                    showEditDialog = false
+                    editingPart = null; editingCategory = null
+                    editingModel = null; editingBrand = null
+                }
+            }
+        )
+    }
+
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Box(
             modifier = modifier
@@ -311,6 +358,7 @@ fun AdminScreen(
                                     AdminItemCard(
                                         title = part.name,
                                         subtitle = "قیمت: ${part.price} تومان | موجودی: ${part.stock}",
+                                        onEdit = { editingPart = part; showEditDialog = true },
                                         onDelete = {
                                             scope.launch {
                                                 repository.deletePart(
@@ -340,6 +388,7 @@ fun AdminScreen(
                                     AdminItemCard(
                                         title = category.name,
                                         onClick = { selectedCategory = category },
+                                        onEdit = { editingCategory = category; showEditDialog = true },
                                         onDelete = null
                                     )
                                 }
@@ -356,6 +405,7 @@ fun AdminScreen(
                                         title = model.name,
                                         subtitle = model.year,
                                         onClick = { selectedModel = model },
+                                        onEdit = { editingModel = model; showEditDialog = true },
                                         onDelete = null
                                     )
                                 }
@@ -371,6 +421,7 @@ fun AdminScreen(
                                     AdminItemCard(
                                         title = brand.name,
                                         onClick = { selectedBrand = brand },
+                                        onEdit = { editingBrand = brand; showEditDialog = true },
                                         onDelete = {
                                             scope.launch {
                                                 repository.deleteBrand(brand.id)
@@ -642,6 +693,118 @@ fun AddItemDialog(
             ) {
                 Text("افزودن", color = Color.White)
             }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("انصراف", color = Color(0xFFA7B1C2))
+            }
+        }
+    )
+}
+
+@Composable
+fun EditItemDialog(
+    editingPart: Part?,
+    editingCategory: Category?,
+    editingModel: CarModel?,
+    editingBrand: Brand?,
+    onDismiss: () -> Unit,
+    onSave: (name: String, extra1: String, extra2: String) -> Unit
+) {
+    var name by remember(editingPart, editingCategory, editingModel, editingBrand) {
+        mutableStateOf(
+            editingPart?.name ?: editingCategory?.name ?: editingModel?.name ?: editingBrand?.name ?: ""
+        )
+    }
+    var extra1 by remember(editingPart, editingModel, editingBrand) {
+        mutableStateOf(
+            editingPart?.price?.toString() ?: editingModel?.year ?: editingBrand?.color ?: ""
+        )
+    }
+    var extra2 by remember(editingPart) {
+        mutableStateOf(editingPart?.stock?.toString() ?: "")
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = Color(0xFF142033),
+        title = {
+            Text(
+                text = when {
+                    editingPart != null -> "ویرایش قطعه"
+                    editingCategory != null -> "ویرایش دسته‌بندی"
+                    editingModel != null -> "ویرایش مدل"
+                    else -> "ویرایش برند"
+                },
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("نام", color = Color(0xFFA7B1C2)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.White, unfocusedTextColor = Color.White,
+                        focusedBorderColor = Color(0xFF3B82F6), unfocusedBorderColor = Color(0xFF243447)
+                    )
+                )
+                if (editingPart != null) {
+                    OutlinedTextField(
+                        value = extra1,
+                        onValueChange = { extra1 = it },
+                        label = { Text("قیمت (تومان)", color = Color(0xFFA7B1C2)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White, unfocusedTextColor = Color.White,
+                            focusedBorderColor = Color(0xFF3B82F6), unfocusedBorderColor = Color(0xFF243447)
+                        )
+                    )
+                    OutlinedTextField(
+                        value = extra2,
+                        onValueChange = { extra2 = it },
+                        label = { Text("موجودی", color = Color(0xFFA7B1C2)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White, unfocusedTextColor = Color.White,
+                            focusedBorderColor = Color(0xFF3B82F6), unfocusedBorderColor = Color(0xFF243447)
+                        )
+                    )
+                }
+                if (editingModel != null) {
+                    OutlinedTextField(
+                        value = extra1,
+                        onValueChange = { extra1 = it },
+                        label = { Text("سال تولید", color = Color(0xFFA7B1C2)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White, unfocusedTextColor = Color.White,
+                            focusedBorderColor = Color(0xFF3B82F6), unfocusedBorderColor = Color(0xFF243447)
+                        )
+                    )
+                }
+                if (editingBrand != null) {
+                    OutlinedTextField(
+                        value = extra1,
+                        onValueChange = { extra1 = it },
+                        label = { Text("رنگ (مثلاً #0D2C54)", color = Color(0xFFA7B1C2)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White, unfocusedTextColor = Color.White,
+                            focusedBorderColor = Color(0xFF3B82F6), unfocusedBorderColor = Color(0xFF243447)
+                        )
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onSave(name, extra1, extra2) },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))
+            ) { Text("ذخیره", color = Color.White) }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {

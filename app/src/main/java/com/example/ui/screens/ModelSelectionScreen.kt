@@ -11,8 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,46 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-data class CarModel(
-    val id: String,
-    val name: String,
-    val year: String = ""
-)
-
-val iranKhodroModels = listOf(
-    CarModel("peugeot_pars", "پژو پارس", "۱۳۸۰ تا کنون"),
-    CarModel("samand", "سمند", "۱۳۸۱ تا کنون"),
-    CarModel("dena", "دنا", "۱۳۹۲ تا کنون"),
-    CarModel("rana", "رانا", "۱۳۹۲ تا کنون"),
-    CarModel("peugeot_206", "پژو ۲۰۶", "۱۳۸۰ تا کنون"),
-    CarModel("peugeot_405", "پژو ۴۰۵", "۱۳۷۲ تا کنون"),
-    CarModel("haima", "هایما S5", "۱۳۹۵ تا کنون"),
-    CarModel("tara", "تارا", "۱۴۰۰ تا کنون"),
-    CarModel("tondar", "تندر ۹۰", "۱۳۸۵ تا کنون"),
-    CarModel("xantia", "زانتیا", "۱۳۷۵ تا کنون"),
-)
-
-val saipaModels = listOf(
-    CarModel("pride", "پراید", "۱۳۶۹ تا کنون"),
-    CarModel("tiba", "تیبا", "۱۳۸۸ تا کنون"),
-    CarModel("saina", "ساینا", "۱۳۹۳ تا کنون"),
-    CarModel("shahin", "شاهین", "۱۳۹۹ تا کنون"),
-    CarModel("quick", "کوییک", "۱۳۹۷ تا کنون"),
-    CarModel("atlas", "اطلس", "۱۳۹۷ تا کنون"),
-)
-
-val otherModels = listOf(
-    CarModel("other", "سایر مدل‌ها", ""),
-)
-
-fun getModelsForBrand(brandId: String): List<CarModel> {
-    return when (brandId) {
-        "iran_khodro" -> iranKhodroModels
-        "saipa" -> saipaModels
-        else -> otherModels
-    }
-}
+import com.example.data.repository.CarModel
+import com.example.data.repository.FirebaseRepository
+import kotlinx.coroutines.launch
 
 fun getBrandTitle(brandId: String): String {
     return when (brandId) {
@@ -88,9 +50,27 @@ fun ModelSelectionScreen(
     onNavigateToCategory: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val models = getModelsForBrand(brandId)
     val brandTitle = getBrandTitle(brandId)
     val brandColor = getBrandColor(brandId)
+    
+    val firebaseRepo = remember { FirebaseRepository() }
+    val scope = rememberCoroutineScope()
+    
+    var models by remember { mutableStateOf<List<CarModel>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf<String?>(null) }
+    
+    LaunchedEffect(brandId) {
+        isLoading = true
+        error = null
+        try {
+            models = firebaseRepo.getModels(brandId)
+        } catch (e: Exception) {
+            error = "خطا در بارگذاری مدل‌ها: ${e.message}"
+        } finally {
+            isLoading = false
+        }
+    }
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Box(
@@ -144,22 +124,82 @@ fun ModelSelectionScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Models List
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    contentPadding = PaddingValues(bottom = 80.dp)
-                ) {
-                    items(models) { model ->
-                        ModelCard(
-                            model = model,
-                            brandColor = brandColor,
-                            onClick = {
-                                onNavigateToCategory(brandId, model.id)
+                // Content
+                when {
+                    isLoading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(color = brandColor)
+                        }
+                    }
+                    error != null -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                Text(
+                                    text = error ?: "خطای ناشناخته",
+                                    color = Color.Red,
+                                    fontSize = 14.sp
+                                )
+                                Button(
+                                    onClick = {
+                                        scope.launch {
+                                            isLoading = true
+                                            error = null
+                                            try {
+                                                models = firebaseRepo.getModels(brandId)
+                                            } catch (e: Exception) {
+                                                error = "خطا در بارگذاری مدل‌ها: ${e.message}"
+                                            } finally {
+                                                isLoading = false
+                                            }
+                                        }
+                                    },
+                                    colors = ButtonDefaults.buttonColors(containerColor = brandColor)
+                                ) {
+                                    Text("تلاش مجدد")
+                                }
                             }
-                        )
+                        }
+                    }
+                    models.isEmpty() -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "مدلی یافت نشد",
+                                color = Color(0xFFA7B1C2),
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                    else -> {
+                        // Models List
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            contentPadding = PaddingValues(bottom = 80.dp)
+                        ) {
+                            items(models) { model ->
+                                ModelCard(
+                                    model = model,
+                                    brandColor = brandColor,
+                                    onClick = {
+                                        onNavigateToCategory(brandId, model.id)
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -197,9 +237,9 @@ fun ModelCard(
                     .clip(RoundedCornerShape(2.dp))
                     .background(brandColor)
             )
-
+            
             Spacer(modifier = Modifier.width(16.dp))
-
+            
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = model.name,
@@ -215,7 +255,7 @@ fun ModelCard(
                     )
                 }
             }
-
+            
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = null,

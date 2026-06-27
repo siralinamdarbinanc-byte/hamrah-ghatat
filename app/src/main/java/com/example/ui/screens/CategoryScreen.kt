@@ -1,5 +1,14 @@
 package com.example.ui.screens
 
+fun Long.formatPrice(): String {
+    if (this <= 0) return "توافقی"
+    return this.toString()
+        .reversed()
+        .chunked(3)
+        .joinToString("٫")
+        .reversed()
+}
+
 import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
@@ -444,7 +453,7 @@ fun CategoryScreen(
                                             )
                                             if (part.price > 0) {
                                                 Text(
-                                                    text = "${part.price} تومان",
+                                                    text = "${part.price.formatPrice()} تومان",
                                                     fontSize = 12.sp,
                                                     color = themeConfig.highlightColor
                                                 )

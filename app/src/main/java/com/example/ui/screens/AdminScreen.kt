@@ -1,5 +1,14 @@
 package com.example.ui.screens
 
+fun Long.formatPrice(): String {
+    if (this <= 0) return "توافقی"
+    return this.toString()
+        .reversed()
+        .chunked(3)
+        .joinToString("٫")
+        .reversed()
+}
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,7 +38,13 @@ import com.example.data.repository.CarModel
 import com.example.data.repository.Category
 import com.example.data.repository.FirebaseRepository
 import com.example.data.repository.Part
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.FileProvider
 import kotlinx.coroutines.launch
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,6 +70,13 @@ fun AdminScreen(
 
     // Seed dialog state
     var showSeedDialog by remember { mutableStateOf(false) }
+    var showCleanDialog by remember { mutableStateOf(false) }
+    var isExporting by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    var isCleanLoading by remember { mutableStateOf(false) }
+    var cleanProgress by remember { mutableStateOf("") }
+    var cleanDone by remember { mutableStateOf(false) }
+    var cleanCount by remember { mutableStateOf(0) }
     var showEditDialog by remember { mutableStateOf(false) }
     var editingBrand by remember { mutableStateOf<Brand?>(null) }
     var editingModel by remember { mutableStateOf<CarModel?>(null) }
@@ -197,6 +219,67 @@ fun AdminScreen(
                         Text("انصراف", color = Color(0xFFA7B1C2))
                     }
                 }
+            }
+        )
+    }
+
+    if (showCleanDialog) {
+        AlertDialog(
+            onDismissRequest = { if (!isCleanLoading) showCleanDialog = false },
+            containerColor = Color(0xFF142033),
+            title = {
+                Text(
+                    text = if (cleanDone) "✅ پاکسازی تمام شد" else "پاکسازی داده‌های قدیمی",
+                    color = Color.White, fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    when {
+                        cleanDone -> Text(
+                            "$cleanCount قطعه قدیمی حذف شد.",
+                            color = Color(0xFFA7B1C2), fontSize = 14.sp
+                        )
+                        isCleanLoading -> {
+                            CircularProgressIndicator(color = Color(0xFF3B82F6), modifier = Modifier.align(Alignment.CenterHorizontally))
+                            Text(cleanProgress, color = Color(0xFFA7B1C2), fontSize = 13.sp)
+                        }
+                        else -> Text(
+                            "این عملیات قطعاتی که با ID رندوم (قدیمی) ذخیره شدن رو حذف می‌کنه و فقط قطعات با ID ثابت باقی می‌مونن.",
+                            color = Color(0xFFA7B1C2), fontSize = 13.sp
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                when {
+                    cleanDone -> Button(
+                        onClick = { showCleanDialog = false; cleanDone = false },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6))
+                    ) { Text("بستن", color = Color.White) }
+                    !isCleanLoading -> Button(
+                        onClick = {
+                            isCleanLoading = true
+                            scope.launch {
+                                try {
+                                    val count = DataSeeder.cleanLegacyParts { p -> cleanProgress = p }
+                                    cleanCount = count
+                                    cleanDone = true
+                                } catch (e: Exception) {
+                                    cleanProgress = "خطا: \${e.message}"
+                                }
+                                isCleanLoading = false
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53935))
+                    ) { Text("شروع پاکسازی", color = Color.White) }
+                }
+            },
+            dismissButton = {
+                if (!isCleanLoading && !cleanDone)
+                    TextButton(onClick = { showCleanDialog = false }) {
+                        Text("انصراف", color = Color(0xFFA7B1C2))
+                    }
             }
         )
     }
@@ -357,7 +440,7 @@ fun AdminScreen(
                                 items(parts) { part ->
                                     AdminItemCard(
                                         title = part.name,
-                                        subtitle = "قیمت: ${part.price} تومان | موجودی: ${part.stock}",
+                                        subtitle = "قیمت: ${part.price.formatPrice()} تومان | موجودی: ${part.stock}",
                                         onEdit = { editingPart = part; showEditDialog = true },
                                         onDelete = {
                                             scope.launch {
@@ -432,6 +515,58 @@ fun AdminScreen(
                                 }
                                 // دکمه راه‌اندازی اولیه
                                 item {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    OutlinedButton(
+                                        onClick = { showCleanDialog = true },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        border = BorderStroke(1.dp, Color(0xFFE53935).copy(alpha = 0.5f)),
+                                        shape = RoundedCornerShape(12.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.DeleteSweep,
+                                            contentDescription = null,
+                                            tint = Color(0xFFE53935),
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = "پاکسازی داده‌های قدیمی",
+                                            color = Color(0xFFE53935),
+                                            fontSize = 13.sp
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    OutlinedButton(
+                                        onClick = {
+                                            isExporting = true
+                                            scope.launch {
+                                                try {
+                                                    val json = repository.exportAllData()
+                                                    val file = File(context.cacheDir, "hamrah_backup_${System.currentTimeMillis()}.json")
+                                                    file.writeText(json)
+                                                    val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+                                                    val intent = Intent(Intent.ACTION_SEND).apply {
+                                                        type = "application/json"
+                                                        putExtra(Intent.EXTRA_STREAM, uri)
+                                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                                    }
+                                                    context.startActivity(Intent.createChooser(intent, "ذخیره بکاپ"))
+                                                } catch (e: Exception) { }
+                                                isExporting = false
+                                            }
+                                        },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        border = BorderStroke(1.dp, Color(0xFF28A745).copy(alpha = 0.5f)),
+                                        shape = RoundedCornerShape(12.dp)
+                                    ) {
+                                        if (isExporting) {
+                                            CircularProgressIndicator(modifier = Modifier.size(18.dp), color = Color(0xFF28A745), strokeWidth = 2.dp)
+                                        } else {
+                                            Icon(imageVector = Icons.Default.Download, contentDescription = null, tint = Color(0xFF28A745), modifier = Modifier.size(18.dp))
+                                        }
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text("اکسپورت و بکاپ داده‌ها", color = Color(0xFF28A745), fontSize = 13.sp)
+                                    }
                                     Spacer(modifier = Modifier.height(8.dp))
                                     OutlinedButton(
                                         onClick = { showSeedDialog = true },

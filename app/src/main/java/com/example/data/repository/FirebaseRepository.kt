@@ -295,4 +295,38 @@ class FirebaseRepository {
             Result.failure(e)
         }
     }
+    suspend fun exportAllData(): String {
+        val sb = StringBuilder()
+        sb.append("{\n\"brands\": [\n")
+        val brands = getBrands()
+        brands.forEachIndexed { bi, brand ->
+            sb.append("  {\"id\": \"${brand.id}\", \"name\": \"${brand.name}\", \"color\": \"${brand.color}\",\n   \"models\": [\n")
+            val models = getModels(brand.id)
+            models.forEachIndexed { mi, model ->
+                sb.append("    {\"id\": \"${model.id}\", \"name\": \"${model.name}\", \"year\": \"${model.year}\",\n     \"categories\": [\n")
+                val cats = getCategories(brand.id, model.id)
+                cats.forEachIndexed { ci, cat ->
+                    sb.append("      {\"id\": \"${cat.id}\", \"name\": \"${cat.name}\",\n       \"parts\": [\n")
+                    val parts = getParts(brand.id, model.id, cat.id)
+                    parts.forEachIndexed { pi, part ->
+                        sb.append("        {\"id\": \"${part.id}\", \"name\": \"${part.name}\", \"price\": ${part.price}, \"stock\": ${part.stock}}")
+                        if (pi < parts.size - 1) sb.append(",")
+                        sb.append("\n")
+                    }
+                    sb.append("       ]}")
+                    if (ci < cats.size - 1) sb.append(",")
+                    sb.append("\n")
+                }
+                sb.append("     ]}")
+                if (mi < models.size - 1) sb.append(",")
+                sb.append("\n")
+            }
+            sb.append("   ]}")
+            if (bi < brands.size - 1) sb.append(",")
+            sb.append("\n")
+        }
+        sb.append("]\n}")
+        return sb.toString()
+    }
+
 }

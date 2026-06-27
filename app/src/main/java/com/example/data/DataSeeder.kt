@@ -991,41 +991,33 @@ object DataSeeder {
         val total = BRANDS.sumOf { b -> b.models.sumOf { m -> m.categories.sumOf { c -> c.parts.size } } }
         var current = 0
 
-        onProgress("در حال پاک کردن داده‌های قدیمی...", 0, total)
-        for (brand in BRANDS) {
-            for (model in brand.models) {
-                for (cat in model.categories) {
-                    val partsRef = db.collection("brands").document(brand.id)
-                        .collection("models").document(model.id)
-                        .collection("categories").document(cat.id)
-                        .collection("parts")
-                    val snap = partsRef.get().await()
-                    for (doc in snap.documents) { doc.reference.delete().await() }
-                }
-            }
-        }
-
         for (brand in BRANDS) {
             onProgress("وارد کردن ${brand.name}...", current, total)
-            db.collection("brands").document(brand.id).set(
-                mapOf("name" to brand.name, "color" to brand.color, "order" to brand.order)
-            ).await()
+            db.collection("brands").document(brand.id)
+                .set(mapOf("name" to brand.name, "color" to brand.color, "order" to brand.order))
+                .await()
             for (model in brand.models) {
                 db.collection("brands").document(brand.id)
                     .collection("models").document(model.id)
-                    .set(mapOf("name" to model.name, "year" to model.year, "order" to model.order)).await()
+                    .set(mapOf("name" to model.name, "year" to model.year, "order" to model.order))
+                    .await()
                 for (cat in model.categories) {
                     db.collection("brands").document(brand.id)
                         .collection("models").document(model.id)
                         .collection("categories").document(cat.id)
-                        .set(mapOf("name" to cat.name, "order" to cat.order)).await()
+                        .set(mapOf("name" to cat.name, "order" to cat.order))
+                        .await()
                     for (part in cat.parts) {
+                        // ID ثابت از روی اسم قطعه — جلوگیری از تکراری شدن
+                        val partId = part.name.replace(" ", "_")
+                            .replace("/", "-")
+                            .take(60)
                         db.collection("brands").document(brand.id)
                             .collection("models").document(model.id)
                             .collection("categories").document(cat.id)
-                            .collection("parts").add(
-                                mapOf("name" to part.name, "price" to part.price, "stock" to part.stock, "description" to "")
-                            ).await()
+                            .collection("parts").document(partId)
+                            .set(mapOf("name" to part.name, "price" to part.price, "stock" to part.stock, "description" to ""))
+                            .await()
                         current++
                         onProgress("${brand.name} / ${model.name}", current, total)
                     }
